@@ -1,0 +1,83 @@
+syntax = "proto3";
+
+package subscription;
+
+message Empty {}
+
+message IconImage {
+    string iconId = 1;
+    string iconUri = 2;
+}
+
+
+message GetIconImageResponse {
+    repeated IconImage iconImage = 1;
+}
+
+
+enum ServiceType {
+    NOT_FOUND = 0;
+    MUSIC = 1;
+}
+
+message Subscription {
+    string subscriptionId = 1;
+    ServiceType serviceType = 2;
+    string iconUri = 3;
+    string serviceName = 4;
+    int32 price = 5;
+    int32 cycle = 6; // 単位は月
+}
+
+message GetSubscriptionRequest {
+    // 詳細な検索条件
+}
+message GetSubscriptionResponse {
+    repeated Subscription subscriptions = 1;
+}
+
+message GetMySubscriptionRequest {
+    string accountId = 1;
+}
+message GetMySubscriptionResponse {
+    repeated Subscription subscriptions = 1;
+}
+
+
+message CreateSubscriptionRequest {
+    string accountId = 1;
+    string subscriptionName = 2;
+    string iconId = 3;
+    int32 price = 4;
+    int32 cycle = 5;
+}
+message CreateSubscriptionResponse {
+    string subscriptionId = 1;
+}
+
+message RegisterSubscriptionRequest {
+    string accountId = 1;
+    int32 price = 2;
+    int32 cycle = 3;
+}
+message RegisterSubscriptionResponse {}
+
+// サブスクの登録・編集・削除に関するサービス
+service SubscriptionService {
+
+    // サブスクを新規作成する際のアイコン一覧を取得する
+    rpc GetIconImageList(Empty) returns (GetIconImageResponse) {};
+
+    // サーバーに登録済みのサブスク一覧
+    rpc GetSubscription(GetSubscriptionRequest) returns (GetSubscriptionResponse) {};
+
+    // 自分のリストに追加されているサブスク一覧
+    rpc GetMySubscription(GetMySubscriptionRequest) returns (GetMySubscriptionResponse) {};
+
+    // 未登録のサブスクを新規作成する
+    rpc CreateSubscription(CreateSubscriptionRequest) returns (CreateSubscriptionResponse) {};
+
+    // 登録済みのサブスクを自分のリストに追加する
+    rpc RegisterSubscription(RegisterSubscriptionRequest) returns (RegisterSubscriptionResponse) {};
+
+}
