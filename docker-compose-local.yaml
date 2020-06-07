@@ -16,8 +16,6 @@ services:
     build: ./apiServer
     ports:
       - 18080:18080
-    logging:
-      driver: gcplogs
     environment:
       - MYSQL_HOST=mysql
       - MYSQL_PORT=3306

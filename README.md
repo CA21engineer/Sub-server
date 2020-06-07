@@ -1,10 +1,14 @@
 # Sub-server
 hack01-iosのサーバー
 
+## ローカル動作確認
+```bash
+$ sh ./run-local.sh 
+```
 
 ## gRPC Code Gen
 ```bash
-$ sh ./grpc-code-gen/code-gen-go.sh ./protobuf ./pb
+$ sh ./grpc-code-gen/code-gen-go.sh ./protobuf ./apiServer/pb
 ```
 
 ## CI/CD関連
