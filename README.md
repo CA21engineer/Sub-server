@@ -1,6 +1,9 @@
 # Sub-server
 hack01-iosのサーバー
 
+## エンドポイント
+`35.221.100.76:18080`
+
 ## ローカル動作確認
 ```bash
 $ sh ./run-local.sh 
