@@ -1,0 +1,25 @@
+version: "3.4"
+services:
+  mysql:
+    build: rdb/mysql
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_DATABASE=subs
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=ca21engineer
+      - MYSQL_PASSWORD=pass
+
+  api-server:
+    restart: always
+    build: .
+    ports:
+      - 18080:18080
+    logging:
+      driver: gcplogs
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+    depends_on:
+      - mysql

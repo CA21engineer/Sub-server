@@ -1,0 +1,8 @@
+DROP SCHEMA IF EXISTS subs;
+CREATE SCHEMA subs;
+USE subs;
+
+CREATE TABLE `test` (
+    `id` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`)
+);
