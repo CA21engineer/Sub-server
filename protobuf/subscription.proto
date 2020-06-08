@@ -1,83 +1,107 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
+
 package subscription;
 
 message Empty {}
 
 message IconImage {
-    string iconId = 1;
-    string iconUri = 2;
+  string iconId = 1;
+  string iconUri = 2;
+  bool isOriginal = 3;
 }
 
-
-message GetIconImageResponse {
-    repeated IconImage iconImage = 1;
-}
-
+message GetIconImageResponse { repeated IconImage iconImage = 1; }
 
 enum ServiceType {
-    NOT_FOUND = 0;
-    MUSIC = 1;
+  NOT_FOUND = 0;
+  MUSIC = 1;
 }
 
 message Subscription {
-    string subscriptionId = 1;
-    ServiceType serviceType = 2;
-    string iconUri = 3;
-    string serviceName = 4;
-    int32 price = 5;
-    int32 cycle = 6; // 単位は月
+  string subscriptionId = 1;
+  ServiceType serviceType = 2;
+  string iconUri = 3;
+  string serviceName = 4;
+  int32 price = 5;
+  int32 cycle = 6; // 単位は月
+  int32 freeTrial = 7;
+  bool isOriginal = 8;
+  google.protobuf.Timestamp startedAt = 9;
 }
 
-message GetSubscriptionRequest {
-    // 詳細な検索条件
+message GetSubscriptionsRequest {
+  // 詳細な検索条件
 }
-message GetSubscriptionResponse {
-    repeated Subscription subscriptions = 1;
-}
+message GetSubscriptionsResponse { repeated Subscription subscriptions = 1; }
 
-message GetMySubscriptionRequest {
-    string accountId = 1;
-}
-message GetMySubscriptionResponse {
-    repeated Subscription subscriptions = 1;
-}
-
+message GetMySubscriptionRequest { string userId = 1; }
+message GetMySubscriptionResponse { repeated Subscription subscriptions = 1; }
 
 message CreateSubscriptionRequest {
-    string accountId = 1;
-    string subscriptionName = 2;
-    string iconId = 3;
-    int32 price = 4;
-    int32 cycle = 5;
+  string userId = 1;
+  string serviceName = 2;
+  string iconId = 3;
+  int32 price = 4;
+  int32 cycle = 5;
+  int32 freeTrial = 6;
+  google.protobuf.Timestamp startedAt = 7;
 }
-message CreateSubscriptionResponse {
-    string subscriptionId = 1;
+message CreateSubscriptionResponse {}
+
+message UpdateSubscriptionRequest {
+  string userSubscription = 1;
+  string userId = 2;
+  string iconId = 3;
+  string subscriptionName = 4;
+  int32 price = 5;
+  int32 cycle = 6;
+  int32 freeTrial = 7;
+  google.protobuf.Timestamp startedAt = 8;
 }
+message UpdateSubscriptionResponse {}
 
 message RegisterSubscriptionRequest {
-    string accountId = 1;
-    int32 price = 2;
-    int32 cycle = 3;
+  string userId = 1;
+  string subscriptionId = 2;
+  google.protobuf.Timestamp startedAt = 3;
 }
 message RegisterSubscriptionResponse {}
+
+message UnregisterSubscriptionRequest {
+  string userId = 1;
+  string subscriptionId = 2;
+}
+message UnregisterSubscriptionResponse {}
 
 // サブスクの登録・編集・削除に関するサービス
 service SubscriptionService {
 
-    // サブスクを新規作成する際のアイコン一覧を取得する
-    rpc GetIconImageList(Empty) returns (GetIconImageResponse) {};
+  // サブスクを新規作成する際のアイコン一覧を取得する
+  rpc GetIconImageList(Empty) returns (GetIconImageResponse) {};
 
-    // サーバーに登録済みのサブスク一覧
-    rpc GetSubscription(GetSubscriptionRequest) returns (GetSubscriptionResponse) {};
+  // サーバーに登録済みのサブスク一覧
+  rpc GetSubscriptions(GetSubscriptionsRequest)
+      returns (GetSubscriptionsResponse) {};
 
-    // 自分のリストに追加されているサブスク一覧
-    rpc GetMySubscription(GetMySubscriptionRequest) returns (GetMySubscriptionResponse) {};
+  // 自分のリストに追加されているサブスク一覧
+  rpc GetMySubscription(GetMySubscriptionRequest)
+      returns (GetMySubscriptionResponse) {};
 
-    // 未登録のサブスクを新規作成する
-    rpc CreateSubscription(CreateSubscriptionRequest) returns (CreateSubscriptionResponse) {};
+  // 未登録のサブスクを新規作成する
+  rpc CreateSubscription(CreateSubscriptionRequest)
+      returns (CreateSubscriptionResponse) {};
 
-    // 登録済みのサブスクを自分のリストに追加する
-    rpc RegisterSubscription(RegisterSubscriptionRequest) returns (RegisterSubscriptionResponse) {};
+  // 既存サブスクを更新する
+  rpc UpdateSubscription(UpdateSubscriptionRequest)
+      returns (UpdateSubscriptionResponse) {};
 
+  // 登録済みのサブスクを自分のリストに追加する
+  rpc RegisterSubscription(RegisterSubscriptionRequest)
+      returns (RegisterSubscriptionResponse) {};
+
+  // 登録済みのサブスクをリストから削除する
+  rpc UnregisterSubscription(UnregisterSubscriptionRequest)
+      returns (UnregisterSubscriptionResponse) {};
 }
