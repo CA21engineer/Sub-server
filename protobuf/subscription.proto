@@ -17,10 +17,11 @@ message GetIconImageResponse {
 
 enum ServiceType {
     NOT_FOUND = 0;
-    MUSIC = 1;
-    MOVIE = 2;
-    MATCHING = 3;
-    STORAGE = 4;
+    NOT_CATEGORIZED = 1;
+    MUSIC = 2;
+    MOVIE = 3;
+    MATCHING = 4;
+    STORAGE = 5;
 }
 
 message Subscription {
