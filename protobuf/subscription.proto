@@ -9,7 +9,6 @@ message Empty {}
 message IconImage {
     string iconId = 1;
     string iconUri = 2;
-    bool isOriginal = 3;
 }
 
 message GetIconImageResponse {
@@ -25,7 +24,7 @@ enum ServiceType {
 }
 
 message Subscription {
-    string userSubscriptionId = 1;
+    string subscriptionId = 1;
     ServiceType serviceType = 2;
     string iconUri = 3;
     string serviceName = 4;
@@ -59,34 +58,42 @@ message CreateSubscriptionRequest {
     int32 freeTrial = 6;
     google.protobuf.Timestamp startedAt = 7;
 }
-message CreateSubscriptionResponse {}
+message CreateSubscriptionResponse {
+    string subscriptionId = 1;
+}
 
 message UpdateSubscriptionRequest {
     string userSubscriptionId = 1;
     string userId = 2;
     string iconId = 3;
-    string subscriptionName = 4;
+    string serviceName = 4;
     int32 price = 5;
     int32 cycle = 6;
     int32 freeTrial = 7;
     google.protobuf.Timestamp startedAt = 8;
 }
-message UpdateSubscriptionResponse {}
+message UpdateSubscriptionResponse {
+    string subscriptionId = 1;
+}
 
 message RegisterSubscriptionRequest {
     string userId = 1;
-    string userSubscriptionId = 2;
+    string subscriptionId = 2;
     int32 price = 3;
     int32 cycle = 4;
     google.protobuf.Timestamp startedAt = 5;
 }
-message RegisterSubscriptionResponse {}
+message RegisterSubscriptionResponse {
+    string userSubscriptionId = 1;
+}
 
 message UnregisterSubscriptionRequest {
     string userId = 1;
     string userSubscriptionId = 2;
 }
-message UnregisterSubscriptionResponse {}
+message UnregisterSubscriptionResponse {
+    string userSubscriptionId = 1;
+}
 
 // サブスクの登録・編集・削除に関するサービス
 service SubscriptionService {
