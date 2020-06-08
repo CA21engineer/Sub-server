@@ -62,4 +62,4 @@ $ sh ./grpc-code-gen/code-gen-go.sh ./protobuf ./apiServer/pb
 
 ## er図
 
-![スクリーンショット 2020-06-08 17 12 36](https://user-images.githubusercontent.com/37885842/84007379-47f59500-a9ab-11ea-8be8-f9d27312455d.png)
+![スクリーンショット 2020-06-08 18 27 52](https://user-images.githubusercontent.com/37885842/84014807-dd962200-a9b5-11ea-9067-0b402ad969e9.png)

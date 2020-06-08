@@ -76,7 +76,9 @@ message UpdateSubscriptionResponse {}
 message RegisterSubscriptionRequest {
     string userId = 1;
     string userSubscriptionId = 2;
-    google.protobuf.Timestamp startedAt = 3;
+    int32 price = 3;
+    int32 cycle = 4;
+    google.protobuf.Timestamp startedAt = 5;
 }
 message RegisterSubscriptionResponse {}
 
