@@ -12,7 +12,9 @@ message IconImage {
     bool isOriginal = 3;
 }
 
-message GetIconImageResponse { repeated IconImage iconImage = 1; }
+message GetIconImageResponse {
+    repeated IconImage iconImage = 1;
+}
 
 enum ServiceType {
     NOT_FOUND = 0;
@@ -23,7 +25,7 @@ enum ServiceType {
 }
 
 message Subscription {
-    string subscriptionId = 1;
+    string userSubscriptionId = 1;
     ServiceType serviceType = 2;
     string iconUri = 3;
     string serviceName = 4;
@@ -37,10 +39,16 @@ message Subscription {
 message GetSubscriptionsRequest {
     // 詳細な検索条件
 }
-message GetSubscriptionsResponse { repeated Subscription subscriptions = 1; }
+message GetSubscriptionsResponse {
+    repeated Subscription subscriptions = 1;
+}
 
-message GetMySubscriptionRequest { string userId = 1; }
-message GetMySubscriptionResponse { repeated Subscription subscriptions = 1; }
+message GetMySubscriptionRequest {
+    string userId = 1;
+}
+message GetMySubscriptionResponse {
+    repeated Subscription subscriptions = 1;
+}
 
 message CreateSubscriptionRequest {
     string userId = 1;
@@ -54,7 +62,7 @@ message CreateSubscriptionRequest {
 message CreateSubscriptionResponse {}
 
 message UpdateSubscriptionRequest {
-    string userSubscription = 1;
+    string userSubscriptionId = 1;
     string userId = 2;
     string iconId = 3;
     string subscriptionName = 4;
@@ -67,14 +75,14 @@ message UpdateSubscriptionResponse {}
 
 message RegisterSubscriptionRequest {
     string userId = 1;
-    string subscriptionId = 2;
+    string userSubscriptionId = 2;
     google.protobuf.Timestamp startedAt = 3;
 }
 message RegisterSubscriptionResponse {}
 
 message UnregisterSubscriptionRequest {
     string userId = 1;
-    string subscriptionId = 2;
+    string userSubscriptionId = 2;
 }
 message UnregisterSubscriptionResponse {}
 
