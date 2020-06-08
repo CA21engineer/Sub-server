@@ -17,6 +17,9 @@ message GetIconImageResponse { repeated IconImage iconImage = 1; }
 enum ServiceType {
   NOT_FOUND = 0;
   MUSIC = 1;
+  MOVIE = 2;
+  MATCHING = 3;
+  STORAGE = 4;
 }
 
 message Subscription {
@@ -25,8 +28,8 @@ message Subscription {
   string iconUri = 3;
   string serviceName = 4;
   int32 price = 5;
-  int32 cycle = 6; // 単位は月
-  int32 freeTrial = 7;
+  int32 cycle = 6;     // 単位は月
+  int32 freeTrial = 7; // 単位は月
   bool isOriginal = 8;
   google.protobuf.Timestamp startedAt = 9;
 }
