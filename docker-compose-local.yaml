@@ -21,3 +21,12 @@ services:
       - MYSQL_PORT=3306
     depends_on:
       - mysql
+
+  push-server:
+    restart: always
+    build: ./pushServer
+    environment:
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+    depends_on:
+      - mysql
