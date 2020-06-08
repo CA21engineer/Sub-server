@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/BambooTuna/go-server-lib/config"
-	subscription "github.com/CA21engineer/Sub-server/apiServer/pb"
-	"github.com/CA21engineer/Sub-server/apiServer/service"
+	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
+	"github.com/CA21engineer/Subs-server/apiServer/service"
 	"google.golang.org/grpc"
 	"log"
 	"net"

@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	subscription "github.com/CA21engineer/Sub-server/apiServer/pb"
+	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
 )
 
 type SubscriptionServiceImpl struct{}
