@@ -13,7 +13,7 @@ func main() {
 
 	serverPort := config.GetEnvString("PORT", "18080")
 
-	lis, err := net.Listen("tcp", serverPort)
+	lis, err := net.Listen("tcp", ":"+serverPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
