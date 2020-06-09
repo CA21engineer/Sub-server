@@ -4,22 +4,28 @@ on: [push]
 
 jobs:
   test:
-    name: Test
+    name: Format
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.14
+      - name: set up
         uses: actions/setup-go@v1
         with:
-          go-version: 1.14
-
-      - name: Check out code into the Go module directory
+          go-version: 1.13
+        id: go
+      - name: checkout
         uses: actions/checkout@v1
+      - name: cache
+        uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
       - name: install lint
         run: curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.18.0
-
-      - name: Run lint
-        run: ~/go/bin/golangci-lint run ./...
+      - name: lint
+        run: golangci-lint run
 
       - name: Test code
         run: go test -v ./...
