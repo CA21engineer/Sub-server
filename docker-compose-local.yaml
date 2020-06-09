@@ -21,3 +21,25 @@ services:
       - MYSQL_PORT=3306
     depends_on:
       - mysql
+
+  prometheus:
+    image: prom/prometheus
+    links:
+      - api-server
+      - mysql
+    volumes:
+      - ./tools/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana
+    links:
+      - prometheus
+      - influxdb
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SERVER_DOMAIN=grafana
+      - GF_SERVER_HTTP_PORT=3000
+      - GF_SERVER_PROTOCOL=http
