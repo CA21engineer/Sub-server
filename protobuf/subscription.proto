@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import "google/protobuf/timestamp.proto";
+
 package subscription;
 
 message Empty {}
@@ -9,15 +11,17 @@ message IconImage {
     string iconUri = 2;
 }
 
-
 message GetIconImageResponse {
     repeated IconImage iconImage = 1;
 }
 
-
 enum ServiceType {
     NOT_FOUND = 0;
-    MUSIC = 1;
+    NOT_CATEGORIZED = 1;
+    MUSIC = 2;
+    MOVIE = 3;
+    MATCHING = 4;
+    STORAGE = 5;
 }
 
 message Subscription {
@@ -26,41 +30,71 @@ message Subscription {
     string iconUri = 3;
     string serviceName = 4;
     int32 price = 5;
-    int32 cycle = 6; // 単位は月
+    int32 cycle = 6;     // 単位は月
+    int32 freeTrial = 7; // 単位は月
+    bool isOriginal = 8;
+    google.protobuf.Timestamp startedAt = 9;
 }
 
-message GetSubscriptionRequest {
+message GetSubscriptionsRequest {
     // 詳細な検索条件
 }
-message GetSubscriptionResponse {
+message GetSubscriptionsResponse {
     repeated Subscription subscriptions = 1;
 }
 
 message GetMySubscriptionRequest {
-    string accountId = 1;
+    string userId = 1;
 }
 message GetMySubscriptionResponse {
     repeated Subscription subscriptions = 1;
 }
 
-
 message CreateSubscriptionRequest {
-    string accountId = 1;
-    string subscriptionName = 2;
+    string userId = 1;
+    string serviceName = 2;
     string iconId = 3;
     int32 price = 4;
     int32 cycle = 5;
+    int32 freeTrial = 6;
+    google.protobuf.Timestamp startedAt = 7;
 }
 message CreateSubscriptionResponse {
     string subscriptionId = 1;
 }
 
-message RegisterSubscriptionRequest {
-    string accountId = 1;
-    int32 price = 2;
-    int32 cycle = 3;
+message UpdateSubscriptionRequest {
+    string userSubscriptionId = 1;
+    string userId = 2;
+    string iconId = 3;
+    string serviceName = 4;
+    int32 price = 5;
+    int32 cycle = 6;
+    int32 freeTrial = 7;
+    google.protobuf.Timestamp startedAt = 8;
 }
-message RegisterSubscriptionResponse {}
+message UpdateSubscriptionResponse {
+    string subscriptionId = 1;
+}
+
+message RegisterSubscriptionRequest {
+    string userId = 1;
+    string subscriptionId = 2;
+    int32 price = 3;
+    int32 cycle = 4;
+    google.protobuf.Timestamp startedAt = 5;
+}
+message RegisterSubscriptionResponse {
+    string userSubscriptionId = 1;
+}
+
+message UnregisterSubscriptionRequest {
+    string userId = 1;
+    string userSubscriptionId = 2;
+}
+message UnregisterSubscriptionResponse {
+    string userSubscriptionId = 1;
+}
 
 // サブスクの登録・編集・削除に関するサービス
 service SubscriptionService {
@@ -69,7 +103,7 @@ service SubscriptionService {
     rpc GetIconImageList(Empty) returns (GetIconImageResponse) {};
 
     // サーバーに登録済みのサブスク一覧
-    rpc GetSubscription(GetSubscriptionRequest) returns (GetSubscriptionResponse) {};
+    rpc GetSubscriptions(GetSubscriptionsRequest) returns (GetSubscriptionsResponse) {};
 
     // 自分のリストに追加されているサブスク一覧
     rpc GetMySubscription(GetMySubscriptionRequest) returns (GetMySubscriptionResponse) {};
@@ -77,7 +111,12 @@ service SubscriptionService {
     // 未登録のサブスクを新規作成する
     rpc CreateSubscription(CreateSubscriptionRequest) returns (CreateSubscriptionResponse) {};
 
+    // 既存サブスクを更新する
+    rpc UpdateSubscription(UpdateSubscriptionRequest) returns (UpdateSubscriptionResponse) {};
+
     // 登録済みのサブスクを自分のリストに追加する
     rpc RegisterSubscription(RegisterSubscriptionRequest) returns (RegisterSubscriptionResponse) {};
 
+    // 登録済みのサブスクをリストから削除する
+    rpc UnregisterSubscription(UnregisterSubscriptionRequest) returns (UnregisterSubscriptionResponse) {};
 }
