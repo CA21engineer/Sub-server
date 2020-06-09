@@ -1,18 +1,18 @@
 package main
 
 import (
-	"Subs-server/apiServer/models"
 	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"time"
 
-	subscription "Subs-server/apiServer/pb"
-	"Subs-server/apiServer/service"
+	"github.com/CA21engineer/Subs-server/apiServer/models"
 
 	"github.com/BambooTuna/go-server-lib/config"
 	"github.com/BambooTuna/go-server-lib/metrics"
+	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
+	"github.com/CA21engineer/Subs-server/apiServer/service"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"

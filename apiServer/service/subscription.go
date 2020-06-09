@@ -3,9 +3,9 @@ package service
 import (
 	"context"
 
-	"Subs-server/apiServer/adopter"
-	"Subs-server/apiServer/models"
-	subscription "Subs-server/apiServer/pb"
+	"github.com/CA21engineer/Subs-server/apiServer/adopter"
+	"github.com/CA21engineer/Subs-server/apiServer/models"
+	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
 )
 
 type SubscriptionServiceImpl struct{}

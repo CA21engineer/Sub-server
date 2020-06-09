@@ -1,8 +1,8 @@
 package adopter
 
 import (
-	"Subs-server/apiServer/models"
-	subscription "Subs-server/apiServer/pb"
+	"github.com/CA21engineer/Subs-server/apiServer/models"
+	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
 )
 
 func ConvertGRPCIconResponse(i *models.Icon) *subscription.IconImage {
