@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 const (
 	NOT_FOUND = iota + 1
 	NOT_CATEGORIZED
@@ -17,5 +19,5 @@ type Subscription struct {
 	Price          int32
 	Cycle          int32
 	IsOriginal     bool
-	FreeTrial      int32
+	FreeTrial      time.Time
 }
