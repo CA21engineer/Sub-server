@@ -4,8 +4,10 @@ import (
 	"context"
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/messaging"
+	"fmt"
 	"github.com/BambooTuna/go-server-lib/config"
 	"google.golang.org/api/option"
+	"time"
 )
 
 func main() {
@@ -18,8 +20,16 @@ func main() {
 		return
 	}
 
-	res, err := send(ctx, client)
-	println(res)
+	ticker := time.NewTicker(time.Hour * 24)
+	defer ticker.Stop()
+	send(ctx, client, time.Now())
+
+	for {
+		select {
+		case t := <-ticker.C:
+			send(ctx, client, t)
+		}
+	}
 
 }
 
@@ -32,7 +42,15 @@ func fcmClient(ctx context.Context, jsonFile string) (*messaging.Client, error) 
 	return app.Messaging(ctx)
 }
 
-func send(ctx context.Context, client *messaging.Client) (string, error) {
+func send(ctx context.Context, client *messaging.Client, t time.Time) {
+	println("Running...", t.String())
+	r, _ := client.SendAll(ctx, fetchBatchMessage())
+	fmt.Printf("SuccessCount: %d\n", r.SuccessCount)
+	fmt.Printf("FailureCount: %d\n", r.FailureCount)
+
+}
+
+func fetchBatchMessage() []*messaging.Message {
 	badge := 0
 	message := &messaging.Message{
 		APNS: &messaging.APNSConfig{
@@ -51,9 +69,5 @@ func send(ctx context.Context, client *messaging.Client) (string, error) {
 		},
 		Token: "RegistrationToken",
 	}
-	r, _ := client.SendAll(ctx, []*messaging.Message{message})
-	println(r.SuccessCount)
-	println(r.FailureCount)
-	println(r.Responses)
-	return client.Send(ctx, message)
+	return []*messaging.Message{message}
 }
