@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	m := metrics.CreateMetrics("Subs")
+	m := metrics.CreateMetrics("go_server")
 	go func() {
 		prometheus.MustRegister(m)
 		http.Handle("/metrics", promhttp.Handler())
@@ -23,19 +23,19 @@ func main() {
 	}()
 
 	go func() {
-		sampleCounter := m.Counter("sample")
-		ticker := time.NewTicker(time.Second * 1)
+		health := m.Gauge("health", map[string]string{})
+		health.Set(200)
+		ticker := time.NewTicker(time.Minute * 1)
 		defer ticker.Stop()
 		for {
 			select {
 			case <-ticker.C:
-				sampleCounter.Inc()
+				health.Set(200)
 			}
 		}
 	}()
 
 	serverPort := config.GetEnvString("PORT", "18080")
-
 	lis, err := net.Listen("tcp", ":"+serverPort)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)

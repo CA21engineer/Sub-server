@@ -24,9 +24,6 @@ services:
 
   prometheus:
     image: prom/prometheus
-    links:
-      - api-server
-      - mysql
     volumes:
       - ./tools/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
@@ -34,8 +31,10 @@ services:
 
   grafana:
     image: grafana/grafana
-    links:
-      - prometheus
+    volumes:
+      - ./tools/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./tools/grafana/dashboards.yml:/etc/grafana/provisioning/dashboards/dashboards.yml
+      - ./tools/grafana/dashboards:/var/lib/grafana/dashboards
     ports:
       - 3000:3000
     environment:
