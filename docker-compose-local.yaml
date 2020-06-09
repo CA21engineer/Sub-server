@@ -36,7 +36,6 @@ services:
     image: grafana/grafana
     links:
       - prometheus
-      - influxdb
     ports:
       - 3000:3000
     environment:
