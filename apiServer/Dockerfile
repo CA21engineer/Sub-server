@@ -7,7 +7,7 @@ ENV CGO_ENABLED=0
 ENV GOOS=linux
 ENV GOARCH=amd64
 
-WORKDIR /go/src/github.com/CA21engineer/Subs-server/apiServer
+WORKDIR /go/src/Subs-server/apiServer
 COPY ${GO_FILE_PATH} .
 RUN go get ./... && \
     go build -o app && \

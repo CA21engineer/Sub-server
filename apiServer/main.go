@@ -1,12 +1,17 @@
 package main
 
 import (
-	"github.com/BambooTuna/go-server-lib/config"
-	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
-	"github.com/CA21engineer/Subs-server/apiServer/service"
-	"google.golang.org/grpc"
+	"fmt"
 	"log"
 	"net"
+
+	"Subs-server/apiServer/models"
+	subscription "Subs-server/apiServer/pb"
+	"Subs-server/apiServer/service"
+
+	"github.com/BambooTuna/go-server-lib/config"
+
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -17,6 +22,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+
+	fmt.Printf("==========%#v\n", models.DB)
 
 	server := grpc.NewServer()
 	subscriptionService := &service.SubscriptionServiceImpl{}
