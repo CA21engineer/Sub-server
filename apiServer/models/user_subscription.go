@@ -1,33 +1,32 @@
 package models
 
-import "time"
+import (
+	"fmt"
+	"time"
+
+	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
+)
 
 //UserSubscription struct
 type UserSubscription struct {
 	UserSubscriptionID string
-	UserID             string
-	Icon               Icon `gorm:"-"`
 	SubscriptionID     string
-	Subscription       Subscription `gorm:"-"`
-	Cycle              int32
+	ServiceType        subscription.ServiceType
+	IconURI            string
+	ServiceName        string
 	Price              int32
+	Cycle              int32
+	FreeTrial          int32
+	IsOriginal         bool
 	StartedAt          time.Time
 }
 
 // GetUserSubscriptions 特定ユーザーの登録しているsubscriptionを返す
 func (u *UserSubscription) GetUserSubscriptions(userID string) ([]*UserSubscription, error) {
 	var userSubscriptions []*UserSubscription
-	if err := DB.Where("user_id = ?", userID).Find(&userSubscriptions).Error; err != nil {
+	sql := fmt.Sprintf("select user_subscriptions.user_subscription_id,user_subscriptions.user_id,icons.*,user_subscriptions.subscription_id,subscriptions.*,user_subscriptions.cycle,user_subscriptions.price from user_subscriptions join subscriptions on user_subscriptions.subscription_id = subscriptions.subscription_id left outer join icons on subscriptions.icon_id = icons.icon_id where user_subscriptions.user_id = '%s'", userID)
+	if err := DB.Raw(sql).Scan(&userSubscriptions).Error; err != nil {
 		return nil, err
-	}
-
-	for i, v := range userSubscriptions {
-		var icon Icon
-		var subscription Subscription
-		DB.Where("subscription_id = ?", v.SubscriptionID).Find(&subscription)
-		DB.Where("icon_id = ?", subscription.IconID).Find(&icon)
-		userSubscriptions[i].Subscription = subscription
-		userSubscriptions[i].Icon = icon
 	}
 	return userSubscriptions, nil
 }
