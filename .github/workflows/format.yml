@@ -22,7 +22,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-go-
       - name: install lint
-        run: GO111MODULE=off go get -u golang.org/x/lint/golint
+        run: go get -u golang.org/x/lint/golint
       - name: lint
         run: golint ./...
       - name: test
