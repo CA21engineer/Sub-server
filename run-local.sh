@@ -2,9 +2,6 @@
 
 cd `dirname $0`
 
-# Build
-sh ./build.sh
-
 if type "docker-compose" > /dev/null 2>&1; then
   docker-compose -f docker-compose-local.yaml up --build -d
 else
