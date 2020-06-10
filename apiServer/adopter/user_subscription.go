@@ -6,12 +6,13 @@ import (
 	"github.com/golang/protobuf/ptypes"
 )
 
+// ConvertGRPCUserSubscriptionResponse `*models.UserSubscription`を`*subscription.Subscription`に変換
 func ConvertGRPCUserSubscriptionResponse(s *models.UserSubscription) *subscription.Subscription {
 	startedAt, _ := ptypes.TimestampProto(s.StartedAt)
 	return &subscription.Subscription{
-		SubscriptionId: s.Subscription.SubscriptionId,
+		SubscriptionId: s.Subscription.SubscriptionID,
 		ServiceType:    s.Subscription.ServiceType,
-		IconUri:        s.Subscription.Icon.IconUri,
+		IconUri:        s.Icon.IconURI,
 		ServiceName:    s.Subscription.ServiceName,
 		Price:          s.Price,
 		Cycle:          s.Cycle,
@@ -21,6 +22,7 @@ func ConvertGRPCUserSubscriptionResponse(s *models.UserSubscription) *subscripti
 	}
 }
 
+// ConvertGRPCUserSubscriptionListResponse `[]*models.UserSubscription`を`[]*subscription.Subscription`に変換
 func ConvertGRPCUserSubscriptionListResponse(iconList []*models.UserSubscription) []*subscription.Subscription {
 	var userSubscriptions []*subscription.Subscription
 	for _, v := range iconList {

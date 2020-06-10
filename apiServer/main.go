@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/CA21engineer/Subs-server/apiServer/models"
+
 	"github.com/BambooTuna/go-server-lib/config"
 	"github.com/BambooTuna/go-server-lib/metrics"
 	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
@@ -45,6 +47,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
+
+	models.ConnectDB()
 
 	server := grpc.NewServer()
 	subscriptionService := &service.SubscriptionServiceImpl{}
