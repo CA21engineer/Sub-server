@@ -1,6 +1,11 @@
 package main
 
 import (
+	"log"
+	"net"
+	"net/http"
+	"time"
+
 	"github.com/BambooTuna/go-server-lib/config"
 	"github.com/BambooTuna/go-server-lib/metrics"
 	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
@@ -8,10 +13,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/grpc"
-	"log"
-	"net"
-	"net/http"
-	"time"
+	"google.golang.org/grpc/reflection"
 )
 
 func main() {
@@ -44,6 +46,7 @@ func main() {
 	server := grpc.NewServer()
 	subscriptionService := &service.SubscriptionServiceImpl{}
 	subscription.RegisterSubscriptionServiceServer(server, subscriptionService)
+	reflection.Register(server)
 
 	if err := server.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
