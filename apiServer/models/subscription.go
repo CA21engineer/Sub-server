@@ -6,7 +6,8 @@ import (
 
 type Subscription struct {
 	SubscriptionId string
-	Icon           *Icon
+	IconId         string
+	Icon           *Icon `gorm:"-"`
 	ServiceName    string
 	ServiceType    subscription.ServiceType
 	Price          int32

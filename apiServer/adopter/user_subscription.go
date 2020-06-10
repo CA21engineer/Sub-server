@@ -11,7 +11,7 @@ func ConvertGRPCUserSubscriptionResponse(s *models.UserSubscription) *subscripti
 	return &subscription.Subscription{
 		SubscriptionId: s.Subscription.SubscriptionId,
 		ServiceType:    s.Subscription.ServiceType,
-		IconUri:        s.Subscription.Icon.IconUri,
+		IconUri:        s.Icon.IconUri,
 		ServiceName:    s.Subscription.ServiceName,
 		Price:          s.Price,
 		Cycle:          s.Cycle,

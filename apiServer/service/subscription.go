@@ -11,7 +11,7 @@ import (
 type SubscriptionServiceImpl struct{}
 
 // サブスクを新規作成する際のアイコン一覧を取得する
-func (SubscriptionServiceImpl) GetIconImageList(context.Context, *subscription.Empty) (*subscription.GetIconImageResponse, error) {
+func (SubscriptionServiceImpl) GetIconImageList(ctx context.Context, req *subscription.Empty) (*subscription.GetIconImageResponse, error) {
 	icons, err := new(models.Icon).All()
 	if err != nil {
 		return nil, err
@@ -25,8 +25,12 @@ func (SubscriptionServiceImpl) GetSubscriptions(context.Context, *subscription.G
 }
 
 // 自分のリストに追加されているサブスク一覧
-func (SubscriptionServiceImpl) GetMySubscription(context.Context, *subscription.GetMySubscriptionRequest) (*subscription.GetMySubscriptionResponse, error) {
-	return &subscription.GetMySubscriptionResponse{}, nil
+func (SubscriptionServiceImpl) GetMySubscription(ctx context.Context, req *subscription.GetMySubscriptionRequest) (*subscription.GetMySubscriptionResponse, error) {
+	userSubscriptions, err := new(models.UserSubscription).GetUserSubscriptions(req.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return &subscription.GetMySubscriptionResponse{Subscriptions: adopter.ConvertGRPCUserSubscriptionListResponse(userSubscriptions)}, nil
 }
 
 // 未登録のサブスクを新規作成する
