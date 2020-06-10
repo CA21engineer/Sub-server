@@ -16,10 +16,13 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
+const namespace = "go_server"
+
 func main() {
-	m := metrics.CreateMetrics("go_server")
+	m := metrics.CreateMetrics(namespace)
 	go func() {
-		prometheus.MustRegister(m)
+		processCollector := prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{Namespace: namespace})
+		prometheus.MustRegister(m, processCollector)
 		http.Handle("/metrics", promhttp.Handler())
 		_ = http.ListenAndServe(":2112", nil)
 	}()
