@@ -25,6 +25,16 @@ func (SubscriptionServiceImpl) GetSubscriptions(context.Context, *subscription.G
 	return &subscription.GetSubscriptionsResponse{}, nil
 }
 
+// GetPopularSubscriptions サーバーに登録済みのサブスク一覧を人気順で取得
+func (SubscriptionServiceImpl) GetPopularSubscriptions(context.Context, *subscription.GetPopularSubscriptionsRequest) (*subscription.GetPopularSubscriptionsResponse, error) {
+	return &subscription.GetPopularSubscriptionsResponse{}, nil
+}
+
+// GetRecommendSubscriptions サーバーに登録済みのサブスク一覧をパラメータによって出し分け
+func (SubscriptionServiceImpl) GetRecommendSubscriptions(context.Context, *subscription.GetRecommendSubscriptionsRequest) (*subscription.GetRecommendSubscriptionsResponse, error) {
+	return &subscription.GetRecommendSubscriptionsResponse{}, nil
+}
+
 // GetMySubscription 自分のリストに追加されているサブスク一覧
 func (SubscriptionServiceImpl) GetMySubscription(ctx context.Context, req *subscription.GetMySubscriptionRequest) (*subscription.GetMySubscriptionResponse, error) {
 	userSubscriptions, err := new(models.UserSubscription).GetUserSubscriptions(req.UserId)
