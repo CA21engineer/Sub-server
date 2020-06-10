@@ -10,7 +10,7 @@ import (
 func ConvertGRPCUserSubscriptionResponse(s *models.UserSubscription) *subscription.Subscription {
 	startedAt, _ := ptypes.TimestampProto(s.StartedAt)
 	return &subscription.Subscription{
-		SubscriptionId: s.Subscription.SubscriptionId,
+		SubscriptionId: s.Subscription.SubscriptionID,
 		ServiceType:    s.Subscription.ServiceType,
 		IconUri:        s.Icon.IconURI,
 		ServiceName:    s.Subscription.ServiceName,

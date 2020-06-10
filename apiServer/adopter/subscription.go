@@ -8,7 +8,7 @@ import (
 // ConvertGRPCSubscriptionResponse `*models.Subscription`を`*subscription.Subscription`に変換
 func ConvertGRPCSubscriptionResponse(s *models.Subscription) *subscription.Subscription {
 	return &subscription.Subscription{
-		SubscriptionId: s.SubscriptionId,
+		SubscriptionId: s.SubscriptionID,
 		ServiceType:    s.ServiceType,
 		IconUri:        s.Icon.IconURI,
 		ServiceName:    s.ServiceName,

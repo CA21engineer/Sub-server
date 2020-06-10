@@ -8,6 +8,7 @@ import (
 	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
 )
 
+// SubscriptionServiceImpl SubscriptionServiceImpl struct
 type SubscriptionServiceImpl struct{}
 
 // GetIconImageList サブスクを新規作成する際のアイコン一覧を取得する
