@@ -24,6 +24,6 @@ jobs:
       - name: install lint
         run: go get -u golang.org/x/lint/golint
       - name: lint
-        run: golint ./...
+        run: ~/go/bin/golint ./...
       - name: test
         run: go test ./... -v
