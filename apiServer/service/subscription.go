@@ -6,6 +6,7 @@ import (
 	"github.com/CA21engineer/Subs-server/apiServer/adopter"
 	"github.com/CA21engineer/Subs-server/apiServer/models"
 	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
+	"github.com/golang/protobuf/ptypes"
 )
 
 // SubscriptionServiceImpl SubscriptionServiceImpl struct
@@ -35,8 +36,14 @@ func (SubscriptionServiceImpl) GetMySubscription(ctx context.Context, req *subsc
 }
 
 // CreateSubscription 未登録のサブスクを新規作成する
-func (SubscriptionServiceImpl) CreateSubscription(context.Context, *subscription.CreateSubscriptionRequest) (*subscription.CreateSubscriptionResponse, error) {
-	return &subscription.CreateSubscriptionResponse{}, nil
+func (SubscriptionServiceImpl) CreateSubscription(ctx context.Context, req *subscription.CreateSubscriptionRequest) (*subscription.CreateSubscriptionResponse, error) {
+	sub := models.NewSubscription(req.IconId, req.ServiceName, req.Price, req.Cycle, req.FreeTrial)
+	startedAt, _ := ptypes.Timestamp(req.StartedAt)
+	err := sub.Create(req.UserId, startedAt)
+	if err != nil {
+		return nil, err
+	}
+	return &subscription.CreateSubscriptionResponse{SubscriptionId: sub.SubscriptionID}, nil
 }
 
 // RegisterSubscription 登録済みのサブスクを自分のリストに追加する

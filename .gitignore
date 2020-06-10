@@ -26,6 +26,8 @@ native
 node_modules/
 dump.rdb
 
+apiServer/go.sum
+
 .DS_Store
 
 credential.yml
