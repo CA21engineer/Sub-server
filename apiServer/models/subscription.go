@@ -4,9 +4,10 @@ import (
 	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
 )
 
+// Subscription Subscription struct
 type Subscription struct {
-	SubscriptionId string
-	IconId         string
+	SubscriptionID string
+	IconID         string
 	Icon           *Icon `gorm:"-"`
 	ServiceName    string
 	ServiceType    subscription.ServiceType
