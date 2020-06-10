@@ -1,7 +1,5 @@
 package models
 
-import "time"
-
 const (
 	NOT_FOUND = iota + 1
 	NOT_CATEGORIZED
@@ -13,11 +11,11 @@ const (
 
 type Subscription struct {
 	SubscriptionId string
-	IconId         string
+	Icon           *Icon
 	ServiceName    string
 	ServiceType    int32
 	Price          int32
 	Cycle          int32
 	IsOriginal     bool
-	FreeTrial      time.Time
+	FreeTrial      int32
 }

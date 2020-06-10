@@ -1,13 +1,10 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net"
 	"net/http"
 	"time"
-
-	"github.com/CA21engineer/Subs-server/apiServer/models"
 
 	"github.com/BambooTuna/go-server-lib/config"
 	"github.com/BambooTuna/go-server-lib/metrics"
@@ -45,8 +42,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
-
-	fmt.Printf("==========%#v\n", models.DB)
 
 	server := grpc.NewServer()
 	subscriptionService := &service.SubscriptionServiceImpl{}
