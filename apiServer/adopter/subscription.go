@@ -3,11 +3,9 @@ package adopter
 import (
 	"github.com/CA21engineer/Subs-server/apiServer/models"
 	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
-	"github.com/golang/protobuf/ptypes"
 )
 
 func ConvertGRPCSubscriptionResponse(s *models.Subscription) *subscription.Subscription {
-	startedAt, _ := ptypes.TimestampProto(s.StartedAt)
 	return &subscription.Subscription{
 		SubscriptionId: s.SubscriptionId,
 		ServiceType:    s.ServiceType,
@@ -15,9 +13,9 @@ func ConvertGRPCSubscriptionResponse(s *models.Subscription) *subscription.Subsc
 		ServiceName:    s.ServiceName,
 		Price:          s.Price,
 		Cycle:          s.Cycle,
-		FreeTrial:      int32(s.FreeTrial.Day()),
+		FreeTrial:      s.FreeTrial,
 		IsOriginal:     s.IsOriginal,
-		StartedAt:      startedAt,
+		StartedAt:      nil,
 	}
 }
 
