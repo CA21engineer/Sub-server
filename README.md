@@ -59,3 +59,7 @@ $ sh ./grpc-code-gen/code-gen-go.sh ./protobuf ./apiServer/pb
 
     ssh接続のポート
     空いていればなんでもよい。基本は22だがセキュリティー上変更した方がいい
+
+## er図
+
+![スクリーンショット 2020-06-08 18 27 52](https://user-images.githubusercontent.com/37885842/84014807-dd962200-a9b5-11ea-9067-0b402ad969e9.png)

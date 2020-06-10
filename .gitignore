@@ -22,6 +22,7 @@ native
 *.log
 *.env
 .terraform/
+.vscode/
 node_modules/
 dump.rdb
 
