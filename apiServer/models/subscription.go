@@ -55,6 +55,33 @@ func (s *Subscription) NewSubscriptionToUserSubscription(userID string, startedA
 	}
 }
 
+// All 登録されている全てのsubscriptionを返す
+func (s *Subscription) All() ([]*SubscriptionWithIcon, error) {
+
+	var subscriptionsWithIcon []*SubscriptionWithIcon
+
+	err := DB.Table("subscriptions").
+		Select("subscriptions.*, icons.*").
+		Joins("join icons on subscriptions.icon_id = icons.icon_id").
+		Scan(&subscriptionsWithIcon).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return subscriptionsWithIcon, nil
+}
+
+// Find 特定のuser_subscriptionを返す
+func (u *Subscription) Find(subscriptionID string) (*Subscription, error) {
+	var subscription Subscription
+	if err := DB.Where("subscription_id = ?", subscriptionID).Find(&subscription).Error; err != nil {
+		return nil, err
+	}
+	return &subscription, nil
+}
+
 // Create create original subscription
 func (s *Subscription) Create(userID string, startedAt time.Time) error {
 	// トランザクション開始
@@ -76,20 +103,37 @@ func (s *Subscription) Create(userID string, startedAt time.Time) error {
 	return tx.Commit().Error
 }
 
-// All 登録されている全てのsubscriptionを返す
-func (s *Subscription) All() ([]*SubscriptionWithIcon, error) {
+// Update update original subscription
+func (s *Subscription) Update(usub *UserSubscription, userID, iconID, serviceName string, price, cycle, freeTrial int32, startedAt time.Time) error {
+	// トランザクション開始
+	tx := DB.Begin()
 
-	var subscriptionsWithIcon []*SubscriptionWithIcon
-
-	err := DB.Table("subscriptions").
-		Select("subscriptions.*, icons.*").
-		Joins("join icons on subscriptions.icon_id = icons.icon_id").
-		Scan(&subscriptionsWithIcon).
-		Error
-
-	if err != nil {
-		return nil, err
+	// ユーザーオリジナルサブスクリプションを更新
+	var subscription Subscription
+	if err := tx.Model(&subscription).Where("subscription_id = ?", s.SubscriptionID).Updates(
+		Subscription{
+			IconID:      iconID,
+			ServiceName: serviceName,
+			FreeTrial:   freeTrial,
+		},
+	).Error; err != nil {
+		tx.Rollback()
+		return err
 	}
 
-	return subscriptionsWithIcon, nil
+	// ユーザーオリジナルサブスクリプションを更新
+	var uusubs UserSubscription
+	if err := tx.Model(&uusubs).Where("user_subscription_id = ?", usub.UserSubscriptionID).Updates(
+		UserSubscription{
+			Price:     price,
+			Cycle:     cycle,
+			StartedAt: startedAt,
+		},
+	).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// コミット
+	return tx.Commit().Error
 }

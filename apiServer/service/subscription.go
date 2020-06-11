@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/CA21engineer/Subs-server/apiServer/adopter"
 	"github.com/CA21engineer/Subs-server/apiServer/models"
@@ -66,8 +67,25 @@ func (SubscriptionServiceImpl) RegisterSubscription(context.Context, *subscripti
 }
 
 // UpdateSubscription 既存サブスクを更新する
-func (SubscriptionServiceImpl) UpdateSubscription(context.Context, *subscription.UpdateSubscriptionRequest) (*subscription.UpdateSubscriptionResponse, error) {
-	return &subscription.UpdateSubscriptionResponse{}, nil
+func (SubscriptionServiceImpl) UpdateSubscription(ctx context.Context, req *subscription.UpdateSubscriptionRequest) (*subscription.UpdateSubscriptionResponse, error) {
+	usub, err := new(models.UserSubscription).Find(req.UserSubscriptionId)
+	if err != nil {
+		return nil, err
+	}
+	sub, err := new(models.Subscription).Find(usub.SubscriptionID)
+	if err != nil {
+		return nil, err
+	}
+	if sub.IsOriginal == true {
+		// 適切にエラーを返すこと
+		errors.New("error")
+	}
+	startedAt, _ := ptypes.Timestamp(req.StartedAt)
+	err = sub.Update(usub, req.UserId, req.IconId, req.ServiceName, req.Price, req.Cycle, req.FreeTrial, startedAt)
+	if err != nil {
+		return nil, err
+	}
+	return &subscription.UpdateSubscriptionResponse{SubscriptionId: usub.UserSubscriptionID}, nil
 }
 
 // UnregisterSubscription 登録済みのサブスクをリストから削除する
