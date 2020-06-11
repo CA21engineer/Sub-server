@@ -11,7 +11,7 @@ import (
 // SubscriptionServiceImpl SubscriptionServiceImpl struct
 type SubscriptionServiceImpl struct{}
 
-// GetIconImageList サブスクを新規作成する際のアイコン一覧を取得する
+// GetIconImageList サブスクを新規作成する際の追加可能アイコン一覧を取得する
 func (SubscriptionServiceImpl) GetIconImageList(ctx context.Context, req *subscription.Empty) (*subscription.GetIconImageResponse, error) {
 	icons, err := new(models.Icon).All()
 	if err != nil {
@@ -21,12 +21,22 @@ func (SubscriptionServiceImpl) GetIconImageList(ctx context.Context, req *subscr
 }
 
 // GetSubscriptions サーバーに登録済みのサブスク一覧
-func (SubscriptionServiceImpl) GetSubscriptions(context.Context, *subscription.GetSubscriptionsRequest) (*subscription.GetSubscriptionsResponse, error) {
+func (SubscriptionServiceImpl) GetSubscriptions(context.Context, *subscription.Empty) (*subscription.GetSubscriptionsResponse, error) {
 	subscriptions, err := new(models.Subscription).All()
 	if err != nil {
 		return nil, err
 	}
 	return &subscription.GetSubscriptionsResponse{Subscriptions: adopter.ConvertGRPCSubscriptionListResponse(subscriptions)}, nil
+}
+
+// GetPopularSubscriptions サーバーに登録済みのサブスク一覧を人気順で取得
+func (SubscriptionServiceImpl) GetPopularSubscriptions(ctx context.Context, req *subscription.Empty) (*subscription.GetPopularSubscriptionsResponse, error) {
+	return &subscription.GetPopularSubscriptionsResponse{}, nil
+}
+
+// GetRecommendSubscriptions サーバーに登録済みのサブスク一覧をパラメータによって出し分け
+func (SubscriptionServiceImpl) GetRecommendSubscriptions(context.Context, *subscription.GetRecommendSubscriptionsRequest) (*subscription.GetRecommendSubscriptionsResponse, error) {
+	return &subscription.GetRecommendSubscriptionsResponse{}, nil
 }
 
 // GetMySubscription 自分のリストに追加されているサブスク一覧
