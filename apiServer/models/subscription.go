@@ -36,7 +36,7 @@ func NewSubscription(iconID, serviceName string, price, cycle, freeTrial int32) 
 		ServiceName:    serviceName,
 		Price:          price,
 		Cycle:          cycle,
-		IsOriginal:     true,
+		IsOriginal:     false,
 		FreeTrial:      freeTrial,
 	}
 }
