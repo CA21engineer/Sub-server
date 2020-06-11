@@ -77,7 +77,6 @@ func (SubscriptionServiceImpl) UpdateSubscription(ctx context.Context, req *subs
 		return nil, responses.NotFoundError(err.Error())
 	}
 	if sub.IsOriginal == true {
-		// 適切にエラーを返すこと
 		return nil, responses.BadRequestError("オリジナルのサブスクリプションは変更できません")
 	}
 	startedAt, _ := ptypes.Timestamp(req.StartedAt)
