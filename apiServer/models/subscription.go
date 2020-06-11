@@ -19,6 +19,7 @@ type Subscription struct {
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
+
 // SubscriptionWithIcon SubscriptionWithIcon struct
 type SubscriptionWithIcon struct {
 	Subscription
