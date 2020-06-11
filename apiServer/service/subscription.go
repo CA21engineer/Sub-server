@@ -22,8 +22,12 @@ func (SubscriptionServiceImpl) GetIconImageList(ctx context.Context, req *subscr
 }
 
 // GetSubscriptions サーバーに登録済みのサブスク一覧
-func (SubscriptionServiceImpl) GetSubscriptions(ctx context.Context, req *subscription.Empty) (*subscription.GetSubscriptionsResponse, error) {
-	return &subscription.GetSubscriptionsResponse{}, nil
+func (SubscriptionServiceImpl) GetSubscriptions(context.Context, *subscription.Empty) (*subscription.GetSubscriptionsResponse, error) {
+	subscriptions, err := new(models.Subscription).All()
+	if err != nil {
+		return nil, err
+	}
+	return &subscription.GetSubscriptionsResponse{Subscriptions: adopter.ConvertGRPCSubscriptionListResponse(subscriptions)}, nil
 }
 
 // GetPopularSubscriptions サーバーに登録済みのサブスク一覧を人気順で取得

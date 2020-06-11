@@ -75,3 +75,21 @@ func (s *Subscription) Create(userID string, startedAt time.Time) error {
 	// コミット
 	return tx.Commit().Error
 }
+
+// All 登録されている全てのsubscriptionを返す
+func (s *Subscription) All() ([]*SubscriptionWithIcon, error) {
+
+	var subscriptionsWithIcon []*SubscriptionWithIcon
+
+	err := DB.Table("subscriptions").
+		Select("subscriptions.*, icons.*").
+		Joins("join icons on subscriptions.icon_id = icons.icon_id").
+		Scan(&subscriptionsWithIcon).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+
+	return subscriptionsWithIcon, nil
+}
