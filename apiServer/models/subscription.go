@@ -1,8 +1,9 @@
 package models
 
 import (
-	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
 	"time"
+
+	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
 )
 
 // Subscription Subscription struct
@@ -19,6 +20,7 @@ type Subscription struct {
 	UpdatedAt      time.Time
 }
 
+// SubscriptionWithIcon SubscriptionWithIcon struct
 type SubscriptionWithIcon struct {
 	Subscription
 	Icon
