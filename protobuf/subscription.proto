@@ -45,7 +45,7 @@ message GetPopularSubscriptionsResponse {
 }
 
 message GetRecommendSubscriptionsRequest {
-    repeated ServiceType serviceType = 1;
+    string userId = 1;
 }
 message GetRecommendSubscriptionsResponse {
     repeated Subscription subscriptions = 1;
