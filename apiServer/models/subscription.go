@@ -75,7 +75,7 @@ func (s *Subscription) All() ([]*SubscriptionWithIcon, error) {
 
 }
 
-// All 登録されている全てのsubscriptionを返す
+// RecommendSubscriptions レコメンドのサブスクリプションを一覧で返す
 func (s *Subscription) RecommendSubscriptions(userID string) ([]*SubscriptionWithIcon, error) {
 
 	var subscriptionsWithIcon []*SubscriptionWithIcon
