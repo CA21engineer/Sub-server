@@ -21,8 +21,18 @@ func (SubscriptionServiceImpl) GetIconImageList(ctx context.Context, req *subscr
 }
 
 // GetSubscriptions サーバーに登録済みのサブスク一覧
-func (SubscriptionServiceImpl) GetSubscriptions(context.Context, *subscription.GetSubscriptionsRequest) (*subscription.GetSubscriptionsResponse, error) {
+func (SubscriptionServiceImpl) GetSubscriptions(ctx context.Context, req *subscription.Empty) (*subscription.GetSubscriptionsResponse, error) {
 	return &subscription.GetSubscriptionsResponse{}, nil
+}
+
+// GetPopularSubscriptions サーバーに登録済みのサブスク一覧を人気順で取得
+func (SubscriptionServiceImpl) GetPopularSubscriptions(ctx context.Context, req *subscription.Empty) (*subscription.GetPopularSubscriptionsResponse, error) {
+	return &subscription.GetPopularSubscriptionsResponse{}, nil
+}
+
+// GetRecommendSubscriptions サーバーに登録済みのサブスク一覧をパラメータによって出し分け
+func (SubscriptionServiceImpl) GetRecommendSubscriptions(context.Context, *subscription.GetRecommendSubscriptionsRequest) (*subscription.GetRecommendSubscriptionsResponse, error) {
+	return &subscription.GetRecommendSubscriptionsResponse{}, nil
 }
 
 // GetMySubscription 自分のリストに追加されているサブスク一覧
