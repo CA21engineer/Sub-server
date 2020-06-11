@@ -33,7 +33,7 @@ func (s *Subscription) All() ([]*SubscriptionWithIcon, error) {
 
 	err := DB.Table("subscriptions").
 		Select("subscriptions.*, icons.*").
-		Joins("left outer join icons on subscriptions.icon_id = icons.icon_id").
+		Joins("join icons on subscriptions.icon_id = icons.icon_id").
 		Scan(&subscriptionsWithIcon).
 		Error
 
