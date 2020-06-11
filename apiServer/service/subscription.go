@@ -11,7 +11,7 @@ import (
 // SubscriptionServiceImpl SubscriptionServiceImpl struct
 type SubscriptionServiceImpl struct{}
 
-// GetIconImageList サブスクを新規作成する際のアイコン一覧を取得する
+// GetIconImageList サブスクを新規作成する際の追加可能アイコン一覧を取得する
 func (SubscriptionServiceImpl) GetIconImageList(ctx context.Context, req *subscription.Empty) (*subscription.GetIconImageResponse, error) {
 	icons, err := new(models.Icon).All()
 	if err != nil {
