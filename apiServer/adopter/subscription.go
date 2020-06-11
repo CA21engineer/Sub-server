@@ -10,7 +10,7 @@ func ConvertGRPCSubscriptionResponse(s *models.Subscription) *subscription.Subsc
 	return &subscription.Subscription{
 		SubscriptionId: s.SubscriptionID,
 		ServiceType:    s.ServiceType,
-		IconUri:        s.Icon.IconURI,
+		IconUri:        s.IconURI,
 		ServiceName:    s.ServiceName,
 		Price:          s.Price,
 		Cycle:          s.Cycle,

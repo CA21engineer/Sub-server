@@ -25,7 +25,7 @@ func (u *UserSubscription) GetUserSubscriptions(userID string) ([]*UserSubscript
 		var icon Icon
 		var subscription Subscription
 		DB.Where("subscription_id = ?", v.SubscriptionID).Find(&subscription)
-		DB.Where("icon_id = ?", subscription.IconID).Find(&icon)
+		DB.Where("icon_id = ?", icon.IconID).Find(&icon)
 		userSubscriptions[i].Subscription = subscription
 		userSubscriptions[i].Icon = icon
 	}
