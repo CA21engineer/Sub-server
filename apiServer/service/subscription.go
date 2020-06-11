@@ -32,7 +32,11 @@ func (SubscriptionServiceImpl) GetSubscriptions(context.Context, *subscription.E
 
 // GetPopularSubscriptions サーバーに登録済みのサブスク一覧を人気順で取得
 func (SubscriptionServiceImpl) GetPopularSubscriptions(ctx context.Context, req *subscription.Empty) (*subscription.GetPopularSubscriptionsResponse, error) {
-	return &subscription.GetPopularSubscriptionsResponse{}, nil
+	subscriptions, err := new(models.Subscription).PopulerAll()
+	if err != nil {
+		return nil, err
+	}
+	return &subscription.GetPopularSubscriptionsResponse{Subscriptions: adopter.ConvertGRPCSubscriptionListResponse(subscriptions)}, nil
 }
 
 // GetRecommendSubscriptions サーバーに登録済みのサブスク一覧をパラメータによって出し分け
