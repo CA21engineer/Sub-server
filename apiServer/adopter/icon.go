@@ -5,13 +5,15 @@ import (
 	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
 )
 
+// ConvertGRPCIconResponse `*model.Icon`を`*subscription.IconImage`に変換
 func ConvertGRPCIconResponse(i *models.Icon) *subscription.IconImage {
 	return &subscription.IconImage{
-		IconId:  i.IconId,
-		IconUri: i.IconUri,
+		IconId:  i.IconID,
+		IconUri: i.IconURI,
 	}
 }
 
+// ConvertGRPCIconListResponse `[]*model.Icon`を`[]*subscription.IconImage`に変換
 func ConvertGRPCIconListResponse(iconList []*models.Icon) []*subscription.IconImage {
 	var iconImages []*subscription.IconImage
 	for _, v := range iconList {
