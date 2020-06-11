@@ -36,12 +36,10 @@ message Subscription {
     google.protobuf.Timestamp startedAt = 9;
 }
 
-message GetSubscriptionsRequest {}
 message GetSubscriptionsResponse {
     repeated Subscription subscriptions = 1;
 }
 
-message GetPopularSubscriptionsRequest {}
 message GetPopularSubscriptionsResponse {
     repeated Subscription subscriptions = 1;
 }
@@ -113,10 +111,10 @@ service SubscriptionService {
     rpc GetIconImageList(Empty) returns (GetIconImageResponse) {};
 
     // サーバーに登録済みのサブスク一覧
-    rpc GetSubscriptions(GetSubscriptionsRequest) returns (GetSubscriptionsResponse) {};
+    rpc GetSubscriptions(Empty) returns (GetSubscriptionsResponse) {};
 
     // サーバーに登録済みのサブスク一覧を人気順で取得
-    rpc GetPopularSubscriptions(GetPopularSubscriptionsRequest) returns (GetPopularSubscriptionsResponse) {};
+    rpc GetPopularSubscriptions(Empty) returns (GetPopularSubscriptionsResponse) {};
 
     // サーバーに登録済みのサブスク一覧をパラメータによって出し分け
     rpc GetRecommendSubscriptions(GetRecommendSubscriptionsRequest) returns (GetRecommendSubscriptionsResponse) {};
