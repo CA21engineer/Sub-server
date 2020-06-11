@@ -9,6 +9,7 @@ import (
 type UserSubscription struct {
 	UserSubscriptionID string
 	UserID             string
+	SubscriptionID     string
 	Price              int32
 	Cycle              int32
 	StartedAt          time.Time
