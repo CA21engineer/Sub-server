@@ -74,6 +74,7 @@ func (s *Subscription) All() ([]*SubscriptionWithIcon, error) {
 	return subscriptionsWithIcon, nil
 }
 
+// PopulerAll　人気のサブスクリプションを人気順で返す
 func (s *Subscription) PopulerAll() ([]*SubscriptionWithIcon, error) {
 	var subscriptionsWithIcon []*SubscriptionWithIcon
 
@@ -86,7 +87,7 @@ func (s *Subscription) PopulerAll() ([]*SubscriptionWithIcon, error) {
 		inner join
 			subscriptions on subscriptions.subscription_id = user_subscriptions.subscription_id
 		inner join
-				icons on subscriptions.icon_id = icons.icon_id
+			icons on subscriptions.icon_id = icons.icon_id
 		where
 			subscriptions.is_original = true
 		group by
@@ -106,6 +107,16 @@ func (s *Subscription) PopulerAll() ([]*SubscriptionWithIcon, error) {
 	}
 
 	return subscriptionsWithIcon, nil
+
+}
+
+// Find 特定のuser_subscriptionを返す
+func (s *Subscription) Find(subscriptionID string) (*Subscription, error) {
+	var subscription Subscription
+	if err := DB.Where("subscription_id = ?", subscriptionID).Find(&subscription).Error; err != nil {
+		return nil, err
+	}
+	return &subscription, nil
 }
 
 // Create create original subscription
@@ -125,6 +136,41 @@ func (s *Subscription) Create(userID string, startedAt time.Time) error {
 		tx.Rollback()
 		return err
 	}
+	// コミット
+	return tx.Commit().Error
+}
+
+// Update update original subscription
+func (s *Subscription) Update(usub *UserSubscription, userID, iconID, serviceName string, price, cycle, freeTrial int32, startedAt time.Time) error {
+	// トランザクション開始
+	tx := DB.Begin()
+
+	// ユーザーオリジナルサブスクリプションを更新
+	var subscription Subscription
+	if err := tx.Model(&subscription).Where("subscription_id = ?", s.SubscriptionID).Updates(
+		Subscription{
+			IconID:      iconID,
+			ServiceName: serviceName,
+			FreeTrial:   freeTrial,
+		},
+	).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// ユーザーオリジナルサブスクリプションを更新
+	var uusubs UserSubscription
+	if err := tx.Model(&uusubs).Where("user_subscription_id = ?", usub.UserSubscriptionID).Updates(
+		UserSubscription{
+			Price:     price,
+			Cycle:     cycle,
+			StartedAt: startedAt,
+		},
+	).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+
 	// コミット
 	return tx.Commit().Error
 }

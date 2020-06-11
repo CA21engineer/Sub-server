@@ -60,3 +60,12 @@ func (u *UserSubscription) GetUserSubscriptions(userID string) ([]*UserSubscript
 	}
 	return userSubscriptions, nil
 }
+
+// Find 特定のuser_subscriptionを返す
+func (u *UserSubscription) Find(userSubscriptionID string) (*UserSubscription, error) {
+	var userSubscription UserSubscription
+	if err := DB.Where("user_subscription_id = ?", userSubscriptionID).Find(&userSubscription).Error; err != nil {
+		return nil, err
+	}
+	return &userSubscription, nil
+}

@@ -6,6 +6,7 @@ import (
 	"github.com/CA21engineer/Subs-server/apiServer/adopter"
 	"github.com/CA21engineer/Subs-server/apiServer/models"
 	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
+	"github.com/CA21engineer/Subs-server/apiServer/responses"
 	"github.com/golang/protobuf/ptypes"
 )
 
@@ -70,8 +71,24 @@ func (SubscriptionServiceImpl) RegisterSubscription(context.Context, *subscripti
 }
 
 // UpdateSubscription 既存サブスクを更新する
-func (SubscriptionServiceImpl) UpdateSubscription(context.Context, *subscription.UpdateSubscriptionRequest) (*subscription.UpdateSubscriptionResponse, error) {
-	return &subscription.UpdateSubscriptionResponse{}, nil
+func (SubscriptionServiceImpl) UpdateSubscription(ctx context.Context, req *subscription.UpdateSubscriptionRequest) (*subscription.UpdateSubscriptionResponse, error) {
+	usub, err := new(models.UserSubscription).Find(req.UserSubscriptionId)
+	if err != nil {
+		return nil, responses.NotFoundError(err.Error())
+	}
+	sub, err := new(models.Subscription).Find(usub.SubscriptionID)
+	if err != nil {
+		return nil, responses.NotFoundError(err.Error())
+	}
+	if sub.IsOriginal == true {
+		return nil, responses.BadRequestError("オリジナルのサブスクリプションは変更できません")
+	}
+	startedAt, _ := ptypes.Timestamp(req.StartedAt)
+	err = sub.Update(usub, req.UserId, req.IconId, req.ServiceName, req.Price, req.Cycle, req.FreeTrial, startedAt)
+	if err != nil {
+		return nil, responses.BadRequestError(err.Error())
+	}
+	return &subscription.UpdateSubscriptionResponse{SubscriptionId: usub.UserSubscriptionID}, nil
 }
 
 // UnregisterSubscription 登録済みのサブスクをリストから削除する
