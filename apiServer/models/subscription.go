@@ -74,7 +74,7 @@ func (s *Subscription) All() ([]*SubscriptionWithIcon, error) {
 	return subscriptionsWithIcon, nil
 }
 
-// PopulerAll　人気のサブスクリプションを人気順で返す
+// PopulerAll 人気のサブスクリプションを人気順で返す
 func (s *Subscription) PopulerAll() ([]*SubscriptionWithIcon, error) {
 	var subscriptionsWithIcon []*SubscriptionWithIcon
 
