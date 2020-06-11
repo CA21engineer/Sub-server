@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
@@ -67,6 +68,41 @@ func (s *Subscription) All() ([]*SubscriptionWithIcon, error) {
 		Error
 
 	if err != nil {
+		return nil, err
+	}
+
+	return subscriptionsWithIcon, nil
+}
+
+// PopulerAll 人気のサブスクリプションを人気順で返す
+func (s *Subscription) PopulerAll() ([]*SubscriptionWithIcon, error) {
+	var subscriptionsWithIcon []*SubscriptionWithIcon
+
+	sql := fmt.Sprint(`
+		select
+			subscriptions.*,
+			icons.icon_uri
+		from
+			user_subscriptions
+		inner join
+			subscriptions on subscriptions.subscription_id = user_subscriptions.subscription_id
+		inner join
+			icons on subscriptions.icon_id = icons.icon_id
+		where
+			subscriptions.is_original = true
+		group by
+			subscriptions.subscription_id,
+			subscriptions.service_name,
+			subscriptions.service_type,
+			subscriptions.price,
+			subscriptions.cycle,
+			subscriptions.is_original,
+			subscriptions.free_trial,
+			icons.icon_uri
+		order by
+			count(user_subscriptions.subscription_id) DESC
+	`)
+	if err := DB.Raw(sql).Scan(&subscriptionsWithIcon).Error; err != nil {
 		return nil, err
 	}
 
