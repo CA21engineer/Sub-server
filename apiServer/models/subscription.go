@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 
 	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
@@ -67,6 +68,23 @@ func (s *Subscription) All() ([]*SubscriptionWithIcon, error) {
 		Error
 
 	if err != nil {
+		return nil, err
+	}
+
+	return subscriptionsWithIcon, nil
+
+}
+
+// All 登録されている全てのsubscriptionを返す
+func (s *Subscription) RecommendSubscriptions(userID string) ([]*SubscriptionWithIcon, error) {
+
+	var subscriptionsWithIcon []*SubscriptionWithIcon
+
+	// ここの値を変えたら出すものを変更させる
+	recommend_type := 2
+
+	sql := fmt.Sprintf("select subscriptions.*, icons.icon_uri from user_subscriptions inner join subscriptions on subscriptions.subscription_id = user_subscriptions.subscription_id inner join icons on subscriptions.icon_id = icons.icon_id where subscriptions.is_original = true AND user_subscriptions.user_id <> '%s' AND subscriptions.service_type = '%d';", userID, recommend_type)
+	if err := DB.Raw(sql).Scan(&subscriptionsWithIcon).Error; err != nil {
 		return nil, err
 	}
 
