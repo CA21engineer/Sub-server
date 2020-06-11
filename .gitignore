@@ -41,3 +41,7 @@ my-ssh-key.pub
 metals.sbt
 .bloop/
 .metals/
+
+#go.sum
+go.sum
+apiServer/go.sum
