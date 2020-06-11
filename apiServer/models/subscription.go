@@ -71,10 +71,11 @@ func (s *Subscription) All() ([]*SubscriptionWithIcon, error) {
 	}
 
 	return subscriptionsWithIcon, nil
+
 }
 
 // Find 特定のuser_subscriptionを返す
-func (u *Subscription) Find(subscriptionID string) (*Subscription, error) {
+func (s *Subscription) Find(subscriptionID string) (*Subscription, error) {
 	var subscription Subscription
 	if err := DB.Where("subscription_id = ?", subscriptionID).Find(&subscription).Error; err != nil {
 		return nil, err
