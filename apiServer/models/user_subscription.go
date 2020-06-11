@@ -59,7 +59,6 @@ func (u *UserSubscription) GetUserSubscriptions(userID string) ([]*UserSubscript
 		}
 	}
 	return userSubscriptions, nil
-
 }
 
 // Find 特定のuser_subscriptionを返す
