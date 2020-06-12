@@ -46,6 +46,7 @@ func (p *PushNotification) AddSchedule(schedule *Schedule) {
 }
 
 func (p PushNotification) executeSchedule(ctx context.Context) {
+	p.Metrics.Gauge(p.Namespace+"_Queue_Size", map[string]string{}).Set(float64(len(p.Schedules)))
 	for k, v := range p.Schedules {
 		if v.CanExecute() {
 			if err := v.Execute(ctx, p.sendMessage); err != nil {
