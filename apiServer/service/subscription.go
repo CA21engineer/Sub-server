@@ -73,7 +73,7 @@ func (SubscriptionServiceImpl) RegisterSubscription(ctx context.Context, req *su
 	if err != nil {
 		return nil, err
 	}
-	return &subscription.RegisterSubscriptionResponse{}, nil
+	return &subscription.RegisterSubscriptionResponse{UserSubscriptionId: usub.UserSubscriptionID}, nil
 }
 
 // UpdateSubscription 既存サブスクを更新する
