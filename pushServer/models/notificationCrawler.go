@@ -5,12 +5,14 @@ import (
 	"time"
 )
 
+// NotificationCrawler NotificationCrawler
 type NotificationCrawler struct {
 	PushNotification *PushNotification
 	Option           NotificationCrawlerOpt
 	Execute          func(context.Context, *PushNotification)
 }
 
+// StartCrawlerTimer StartCrawlerTimer
 func (n NotificationCrawler) StartCrawlerTimer(ctx context.Context) {
 	ticker := time.NewTicker(n.Option.Duration)
 	defer ticker.Stop()

@@ -17,6 +17,7 @@ type PushNotification struct {
 	Metrics   metrics.Metrics
 }
 
+// DefaultPushNotification DefaultPushNotification
 func DefaultPushNotification(namespace string, client *messaging.Client, metrics metrics.Metrics) *PushNotification {
 	return &PushNotification{Namespace: namespace, Option: DefaultNotificationOpt(), Client: client, Schedules: map[string]*Schedule{}, Metrics: metrics}
 }

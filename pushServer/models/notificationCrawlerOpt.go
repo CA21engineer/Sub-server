@@ -4,13 +4,13 @@ import (
 	"time"
 )
 
-// NotificationOpt NotificationOpt
+// NotificationCrawlerOpt NotificationCrawlerOpt
 type NotificationCrawlerOpt struct {
 	MessageGen func(string) *Message // token => models.Message
 	Duration   time.Duration
 }
 
-// DefaultNotificationOpt DefaultNotificationOpt
+// DefaultNotificationCrawlerOpt DefaultNotificationCrawlerOpt
 func DefaultNotificationCrawlerOpt() NotificationCrawlerOpt {
 	return NotificationCrawlerOpt{
 		MessageGen: func(s string) *Message {
