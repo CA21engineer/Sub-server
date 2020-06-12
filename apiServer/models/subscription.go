@@ -117,7 +117,7 @@ func (s *Subscription) RecommendSubscriptions(userID string) ([]*SubscriptionWit
 	var subscriptionsWithIcon []*SubscriptionWithIcon
 
 	// ここの値を変えたら出すものを変更させる
-	recommend_type := rand.Intn(3) + 2
+	recommendType := rand.Intn(3) + 2
 
 	sql := fmt.Sprintf(`
 		select
@@ -134,14 +134,15 @@ func (s *Subscription) RecommendSubscriptions(userID string) ([]*SubscriptionWit
 		and
 			subscriptions.service_type = '%d'
 		and
-			subscriptions.subscription_id not in
-			(select
-				subscription_id
-			from
-				user_subscriptions
-			where
-				user_id = '%s');
-	`, recommend_type, userID)
+			subscriptions.subscription_id not in (
+				select
+					subscription_id
+				from
+					user_subscriptions
+				where
+					user_id = '%s'
+			);
+	`, recommendType, userID)
 	if err := DB.Raw(sql).Scan(&subscriptionsWithIcon).Error; err != nil {
 		return nil, err
 	}
