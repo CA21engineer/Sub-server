@@ -4,7 +4,6 @@ import (
 	"context"
 	"firebase.google.com/go/messaging"
 	"github.com/BambooTuna/go-server-lib/metrics"
-	"github.com/google/uuid"
 	"time"
 )
 
@@ -36,13 +35,9 @@ func (p PushNotification) StartTimer(ctx context.Context) {
 }
 
 // AddSchedule AddSchedule
-func (p *PushNotification) AddSchedule(schedule *Schedule) {
+func (p *PushNotification) AddSchedule(id string, schedule *Schedule) {
 	if !schedule.Executed() {
-		uid, err := uuid.NewUUID()
-		if err != nil {
-			return
-		}
-		p.Schedules[uid.String()] = schedule
+		p.Schedules[id] = schedule
 	}
 }
 

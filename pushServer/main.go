@@ -4,8 +4,10 @@ import (
 	"context"
 	firebase "firebase.google.com/go"
 	"firebase.google.com/go/messaging"
+	"fmt"
 	"github.com/BambooTuna/go-server-lib/config"
 	"github.com/BambooTuna/go-server-lib/metrics"
+	models2 "github.com/CA21engineer/Subs-server/apiserver/models"
 	"github.com/CA21engineer/Subs-server/pushServer/models"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -32,17 +34,37 @@ func main() {
 		return
 	}
 
+	models2.ConnectDB()
+
 	// サブスク解約通知
 	cancellation := models.DefaultPushNotification("Cancellation", client, m)
 
 	// クローラー作成
+	lastTime := time.Date(2020, 01, 01, 00, 00, 00, 00, nil)
+	type Record struct {
+		UserId string
+		UserSubscriptionId string
+		StartedAt time.Time
+		FreeTrial int // 単位は月
+	}
 	cancellationCrawler := &models.NotificationCrawler{
 		PushNotification: cancellation,
 		Option:           models.DefaultNotificationCrawlerOpt(),
 		Execute: func(ctx context.Context, notification *models.PushNotification) {
 			// 完結型の場合はここでDBを読み込んで通知すべきユーザーをリストアップしてAddScheduleする
-			schedule := models.ApplyPlan(time.Now().Add(time.Second*10), "push_token")
-			notification.AddSchedule(schedule)
+			var record Record
+			sql := fmt.Sprintf("select user_subscriptions.user_id,user_subscriptions.user_subscription_id,user_subscriptions.started_at, subscriptions.free_trial from user_subscriptions join subscriptions on user_subscriptions.subscription_id = subscriptions.subscription_id where time(user_subscriptions.updated_at) > %v", lastTime)
+			if err := models2.DB.Raw(sql).Scan(&record).Error; err != nil {
+				return
+			}
+			lastTime = time.Now()
+			println("------------------")
+			println(record.UserId)
+			println(record.UserSubscriptionId)
+			println(record.StartedAt.String())
+			println(record.FreeTrial)
+			schedule := models.ApplyPlan(time.Now().Add(time.Second*10), record.UserId)
+			notification.AddSchedule(record.UserSubscriptionId, schedule)
 		},
 	}
 
