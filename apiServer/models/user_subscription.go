@@ -69,3 +69,14 @@ func (u *UserSubscription) Find(userSubscriptionID string) (*UserSubscription, e
 	}
 	return &userSubscription, nil
 }
+
+// Unregister 特定のuser_subscriptionを削除する
+func (u *UserSubscription) Unregister(userID string, userSubscriptionID string) (*UserSubscription, error) {
+	var userSubscription UserSubscription
+	findUserSubscriptionQuery := DB.Where("user_id = ? and user_subscription_id = ?", userID, userSubscriptionID)
+	if err := findUserSubscriptionQuery.First(&userSubscription).Error; err != nil {
+		return nil, err
+	}
+	findUserSubscriptionQuery.Delete(&userSubscription)
+	return &userSubscription, nil
+}

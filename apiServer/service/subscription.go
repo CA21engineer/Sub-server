@@ -92,6 +92,10 @@ func (SubscriptionServiceImpl) UpdateSubscription(ctx context.Context, req *subs
 }
 
 // UnregisterSubscription 登録済みのサブスクをリストから削除する
-func (SubscriptionServiceImpl) UnregisterSubscription(context.Context, *subscription.UnregisterSubscriptionRequest) (*subscription.UnregisterSubscriptionResponse, error) {
-	return &subscription.UnregisterSubscriptionResponse{}, nil
+func (SubscriptionServiceImpl) UnregisterSubscription(ctx context.Context, req *subscription.UnregisterSubscriptionRequest) (*subscription.UnregisterSubscriptionResponse, error) {
+	usub, err := new(models.UserSubscription).Unregister(req.UserId, req.UserSubscriptionId)
+	if err != nil {
+		return nil, responses.NotFoundError(err.Error())
+	}
+	return &subscription.UnregisterSubscriptionResponse{UserSubscriptionId: usub.UserSubscriptionID}, nil
 }
