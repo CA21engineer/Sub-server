@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"time"
 )
 
@@ -17,6 +18,17 @@ type UserSubscription struct {
 	UpdatedAt          time.Time
 	Subscription       Subscription
 	Icon               Icon
+}
+
+// NewUserSubscription new UserSubscription struct
+func NewUserSubscription(userID, subscriptionID string, price, cycle int32, startedAt time.Time) *UserSubscription {
+	return &UserSubscription{
+		UserID:         userID,
+		SubscriptionID:    subscriptionID,
+		Price:          price,
+		Cycle:          cycle,
+		StartedAt: startedAt,
+	}
 }
 
 // UserSubscriptionDiff UserSubscriptionDiff struct
@@ -68,4 +80,14 @@ func (u *UserSubscription) Find(userSubscriptionID string) (*UserSubscription, e
 		return nil, err
 	}
 	return &userSubscription, nil
+}
+
+//Register user_subscriptionを新規作成する
+func (u *UserSubscription) Register() error {
+	uid, err := uuid.NewUUID()
+	u.UserSubscriptionID = uid.String()
+	if err = DB.Create(u).Error; err != nil {
+		return err
+	}
+	return nil
 }

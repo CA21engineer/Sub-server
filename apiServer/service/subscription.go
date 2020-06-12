@@ -66,7 +66,13 @@ func (SubscriptionServiceImpl) CreateSubscription(ctx context.Context, req *subs
 }
 
 // RegisterSubscription 登録済みのサブスクを自分のリストに追加する
-func (SubscriptionServiceImpl) RegisterSubscription(context.Context, *subscription.RegisterSubscriptionRequest) (*subscription.RegisterSubscriptionResponse, error) {
+func (SubscriptionServiceImpl) RegisterSubscription(ctx context.Context, req *subscription.RegisterSubscriptionRequest) (*subscription.RegisterSubscriptionResponse, error) {
+	startedAt, _ := ptypes.Timestamp(req.StartedAt)
+	usub := models.NewUserSubscription(req.UserId, req.SubscriptionId, req.Price, req.Cycle, startedAt)
+	err := usub.Register()
+	if err != nil {
+		return nil, err
+	}
 	return &subscription.RegisterSubscriptionResponse{}, nil
 }
 
