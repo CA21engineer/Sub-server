@@ -37,6 +37,7 @@ func main() {
 		PushNotification: cancellation,
 		Option:           models.DefaultNotificationCrawlerOpt(),
 		Execute: func(ctx context.Context, notification *models.PushNotification) {
+			// 完結型の場合はここでDBを読み込んで通知すべきユーザーをリストアップしてAddScheduleする
 			schedule := models.ApplyPlan(time.Now().Add(time.Second*30), "push_token")
 			notification.AddSchedule(schedule)
 		},
