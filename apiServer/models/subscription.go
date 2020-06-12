@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"math/rand"
 	"time"
 
 	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
@@ -102,6 +103,46 @@ func (s *Subscription) PopulerAll() ([]*SubscriptionWithIcon, error) {
 		order by
 			count(user_subscriptions.subscription_id) DESC
 	`)
+	if err := DB.Raw(sql).Scan(&subscriptionsWithIcon).Error; err != nil {
+		return nil, err
+	}
+
+	return subscriptionsWithIcon, nil
+
+}
+
+// RecommendSubscriptions レコメンドのサブスクリプションを一覧で返す
+func (s *Subscription) RecommendSubscriptions(userID string) ([]*SubscriptionWithIcon, error) {
+
+	var subscriptionsWithIcon []*SubscriptionWithIcon
+
+	// ここの値を変えたら出すものを変更させる
+	recommendType := rand.Intn(4) + 2
+
+	sql := fmt.Sprintf(`
+		select
+			subscriptions.*,
+			icons.icon_uri
+		from
+			subscriptions
+		left outer join
+			user_subscriptions on user_subscriptions.subscription_id = subscriptions.subscription_id
+		inner join
+			icons on subscriptions.icon_id = icons.icon_id
+		where
+			subscriptions.is_original = true
+		and
+			subscriptions.service_type = '%d'
+		and
+			subscriptions.subscription_id not in (
+				select
+					subscription_id
+				from
+					user_subscriptions
+				where
+					user_id = '%s'
+			);
+	`, recommendType, userID)
 	if err := DB.Raw(sql).Scan(&subscriptionsWithIcon).Error; err != nil {
 		return nil, err
 	}

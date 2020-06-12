@@ -41,8 +41,12 @@ func (SubscriptionServiceImpl) GetPopularSubscriptions(ctx context.Context, req 
 }
 
 // GetRecommendSubscriptions サーバーに登録済みのサブスク一覧をパラメータによって出し分け
-func (SubscriptionServiceImpl) GetRecommendSubscriptions(context.Context, *subscription.GetRecommendSubscriptionsRequest) (*subscription.GetRecommendSubscriptionsResponse, error) {
-	return &subscription.GetRecommendSubscriptionsResponse{}, nil
+func (SubscriptionServiceImpl) GetRecommendSubscriptions(ctx context.Context, req *subscription.GetRecommendSubscriptionsRequest) (*subscription.GetRecommendSubscriptionsResponse, error) {
+	subscriptions, err := new(models.Subscription).RecommendSubscriptions(req.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return &subscription.GetRecommendSubscriptionsResponse{Subscriptions: adopter.ConvertGRPCSubscriptionListResponse(subscriptions)}, nil
 }
 
 // GetMySubscription 自分のリストに追加されているサブスク一覧
