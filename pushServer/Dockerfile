@@ -9,7 +9,7 @@ ENV GOARCH=amd64
 
 WORKDIR /go/src/github.com/CA21engineer/Subs-server/pushServer
 COPY ${GO_FILE_PATH} .
-RUN go get ./... && \
+RUN go get -u ./... && \
     go build -o app && \
     mv ./app /app && mv ./firebase.json /firebase.json
 
