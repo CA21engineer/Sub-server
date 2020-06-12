@@ -28,6 +28,8 @@ services:
     environment:
       - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
+      - MYSQL_USER=ca21engineer
+      - MYSQL_PASS=pass
     depends_on:
       - mysql
 

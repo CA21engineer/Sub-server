@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"github.com/BambooTuna/go-server-lib/config"
 	"github.com/BambooTuna/go-server-lib/metrics"
-	models2 "github.com/CA21engineer/Subs-server/apiserver/models"
+	models2 "github.com/CA21engineer/Subs-server/apiServer/models"
 	"github.com/CA21engineer/Subs-server/pushServer/models"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
@@ -40,31 +40,30 @@ func main() {
 	cancellation := models.DefaultPushNotification("Cancellation", client, m)
 
 	// クローラー作成
-	lastTime := time.Date(2020, 01, 01, 00, 00, 00, 00, nil)
+	lastTime := time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC)
 	type Record struct {
-		UserId string
+		UserId             string
 		UserSubscriptionId string
-		StartedAt time.Time
-		FreeTrial int // 単位は月
+		StartedAt          time.Time
+		FreeTrial          int // 単位は月
 	}
 	cancellationCrawler := &models.NotificationCrawler{
 		PushNotification: cancellation,
 		Option:           models.DefaultNotificationCrawlerOpt(),
 		Execute: func(ctx context.Context, notification *models.PushNotification) {
 			// 完結型の場合はここでDBを読み込んで通知すべきユーザーをリストアップしてAddScheduleする
-			var record Record
-			sql := fmt.Sprintf("select user_subscriptions.user_id,user_subscriptions.user_subscription_id,user_subscriptions.started_at, subscriptions.free_trial from user_subscriptions join subscriptions on user_subscriptions.subscription_id = subscriptions.subscription_id where time(user_subscriptions.updated_at) > %v", lastTime)
-			if err := models2.DB.Raw(sql).Scan(&record).Error; err != nil {
+			var records []*Record
+			sql := fmt.Sprintf("select user_subscriptions.user_id,user_subscriptions.user_subscription_id,user_subscriptions.started_at, subscriptions.free_trial from user_subscriptions join subscriptions on user_subscriptions.subscription_id = subscriptions.subscription_id where user_subscriptions.updated_at > '%v'", lastTime)
+			if err := models2.DB.Raw(sql).Scan(&records).Error; err != nil {
+				m.Counter("DB_Error_Total", map[string]string{"error_message": err.Error()}).Inc()
 				return
 			}
+
 			lastTime = time.Now()
-			println("------------------")
-			println(record.UserId)
-			println(record.UserSubscriptionId)
-			println(record.StartedAt.String())
-			println(record.FreeTrial)
-			schedule := models.ApplyPlan(time.Now().Add(time.Second*10), record.UserId)
-			notification.AddSchedule(record.UserSubscriptionId, schedule)
+			for _, record := range records {
+				schedule := models.ApplyPlan(time.Now().Add(time.Second*10), record.UserId)
+				notification.AddSchedule(record.UserSubscriptionId, schedule)
+			}
 		},
 	}
 
