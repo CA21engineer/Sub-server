@@ -117,7 +117,7 @@ func (s *Subscription) RecommendSubscriptions(userID string) ([]*SubscriptionWit
 	var subscriptionsWithIcon []*SubscriptionWithIcon
 
 	// ここの値を変えたら出すものを変更させる
-	recommendType := rand.Intn(3) + 2
+	recommendType := rand.Intn(4) + 2
 
 	sql := fmt.Sprintf(`
 		select
