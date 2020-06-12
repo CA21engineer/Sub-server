@@ -7,7 +7,10 @@ import (
 	"github.com/BambooTuna/go-server-lib/config"
 	"github.com/BambooTuna/go-server-lib/metrics"
 	"github.com/CA21engineer/Subs-server/pushServer/models"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"google.golang.org/api/option"
+	"net/http"
 	"sync"
 	"time"
 )
@@ -20,7 +23,7 @@ func main() {
 	m.Counter("Server_Start_Total", map[string]string{}).Inc()
 
 	wg := new(sync.WaitGroup)
-	wg.Add(2)
+	wg.Add(3)
 
 	jsonFile := config.GetEnvString("FIREBASE_JSON", "firebase.json")
 	client, err := fcmClient(ctx, jsonFile)
@@ -38,10 +41,18 @@ func main() {
 		Option:           models.DefaultNotificationCrawlerOpt(),
 		Execute: func(ctx context.Context, notification *models.PushNotification) {
 			// 完結型の場合はここでDBを読み込んで通知すべきユーザーをリストアップしてAddScheduleする
-			schedule := models.ApplyPlan(time.Now().Add(time.Second*30), "push_token")
+			schedule := models.ApplyPlan(time.Now().Add(time.Second*10), "push_token")
 			notification.AddSchedule(schedule)
 		},
 	}
+
+	go func() {
+		processCollector := prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{Namespace: namespace})
+		prometheus.MustRegister(m, processCollector)
+		http.Handle("/metrics", promhttp.Handler())
+		_ = http.ListenAndServe(":2112", nil)
+		wg.Done()
+	}()
 
 	go func() {
 		cancellation.StartTimer(ctx)
