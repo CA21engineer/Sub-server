@@ -33,7 +33,11 @@ func (SubscriptionServiceImpl) GetSubscriptions(context.Context, *subscription.E
 
 // GetPopularSubscriptions サーバーに登録済みのサブスク一覧を人気順で取得
 func (SubscriptionServiceImpl) GetPopularSubscriptions(ctx context.Context, req *subscription.Empty) (*subscription.GetPopularSubscriptionsResponse, error) {
-	return &subscription.GetPopularSubscriptionsResponse{}, nil
+	subscriptions, err := new(models.Subscription).PopulerAll()
+	if err != nil {
+		return nil, err
+	}
+	return &subscription.GetPopularSubscriptionsResponse{Subscriptions: adopter.ConvertGRPCSubscriptionListResponse(subscriptions)}, nil
 }
 
 // GetRecommendSubscriptions サーバーに登録済みのサブスク一覧をパラメータによって出し分け
@@ -66,8 +70,14 @@ func (SubscriptionServiceImpl) CreateSubscription(ctx context.Context, req *subs
 }
 
 // RegisterSubscription 登録済みのサブスクを自分のリストに追加する
-func (SubscriptionServiceImpl) RegisterSubscription(context.Context, *subscription.RegisterSubscriptionRequest) (*subscription.RegisterSubscriptionResponse, error) {
-	return &subscription.RegisterSubscriptionResponse{}, nil
+func (SubscriptionServiceImpl) RegisterSubscription(ctx context.Context, req *subscription.RegisterSubscriptionRequest) (*subscription.RegisterSubscriptionResponse, error) {
+	startedAt, _ := ptypes.Timestamp(req.StartedAt)
+	usub := models.NewUserSubscription(req.UserId, req.SubscriptionId, req.Price, req.Cycle, startedAt)
+	err := usub.Register()
+	if err != nil {
+		return nil, err
+	}
+	return &subscription.RegisterSubscriptionResponse{UserSubscriptionId: usub.UserSubscriptionID}, nil
 }
 
 // UpdateSubscription 既存サブスクを更新する
@@ -92,6 +102,10 @@ func (SubscriptionServiceImpl) UpdateSubscription(ctx context.Context, req *subs
 }
 
 // UnregisterSubscription 登録済みのサブスクをリストから削除する
-func (SubscriptionServiceImpl) UnregisterSubscription(context.Context, *subscription.UnregisterSubscriptionRequest) (*subscription.UnregisterSubscriptionResponse, error) {
-	return &subscription.UnregisterSubscriptionResponse{}, nil
+func (SubscriptionServiceImpl) UnregisterSubscription(ctx context.Context, req *subscription.UnregisterSubscriptionRequest) (*subscription.UnregisterSubscriptionResponse, error) {
+	usub, err := new(models.UserSubscription).Unregister(req.UserId, req.UserSubscriptionId)
+	if err != nil {
+		return nil, responses.NotFoundError(err.Error())
+	}
+	return &subscription.UnregisterSubscriptionResponse{UserSubscriptionId: usub.UserSubscriptionID}, nil
 }

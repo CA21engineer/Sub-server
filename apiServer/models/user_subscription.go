@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"time"
 )
 
@@ -17,6 +18,17 @@ type UserSubscription struct {
 	UpdatedAt          time.Time
 	Subscription       Subscription
 	Icon               Icon
+}
+
+// NewUserSubscription new UserSubscription struct
+func NewUserSubscription(userID, subscriptionID string, price, cycle int32, startedAt time.Time) *UserSubscription {
+	return &UserSubscription{
+		UserID:         userID,
+		SubscriptionID:    subscriptionID,
+		Price:          price,
+		Cycle:          cycle,
+		StartedAt: startedAt,
+	}
 }
 
 // UserSubscriptionDiff UserSubscriptionDiff struct
@@ -67,5 +79,30 @@ func (u *UserSubscription) Find(userSubscriptionID string) (*UserSubscription, e
 	if err := DB.Where("user_subscription_id = ?", userSubscriptionID).Find(&userSubscription).Error; err != nil {
 		return nil, err
 	}
+	return &userSubscription, nil
+}
+
+//Register user_subscriptionを新規作成する
+func (u *UserSubscription) Register() error {
+	uid, err := uuid.NewUUID()
+	if err != nil {
+		return err
+	}
+
+	u.UserSubscriptionID = uid.String()
+	if err = DB.Create(u).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// Unregister 特定のuser_subscriptionを削除する
+func (u *UserSubscription) Unregister(userID string, userSubscriptionID string) (*UserSubscription, error) {
+	var userSubscription UserSubscription
+	findUserSubscriptionQuery := DB.Where("user_id = ? and user_subscription_id = ?", userID, userSubscriptionID)
+	if err := findUserSubscriptionQuery.First(&userSubscription).Error; err != nil {
+		return nil, err
+	}
+	findUserSubscriptionQuery.Delete(&userSubscription)
 	return &userSubscription, nil
 }
