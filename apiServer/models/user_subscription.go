@@ -85,6 +85,10 @@ func (u *UserSubscription) Find(userSubscriptionID string) (*UserSubscription, e
 //Register user_subscriptionを新規作成する
 func (u *UserSubscription) Register() error {
 	uid, err := uuid.NewUUID()
+	if err != nil {
+		return err
+	}
+
 	u.UserSubscriptionID = uid.String()
 	if err = DB.Create(u).Error; err != nil {
 		return err
