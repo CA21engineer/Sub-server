@@ -1,0 +1,32 @@
+{
+  "subscriptions": [
+    {
+      "subscriptionId": "1",
+      "serviceType": "MOVIE",
+      "iconUri": "https://images-fe.ssl-images-amazon.com/images/I/411j1k1u9yL.png",
+      "serviceName": "アマゾン",
+      "price": 1080,
+      "cycle": 1,
+      "freeTrial": 1
+    },
+    {
+      "subscriptionId": "2",
+      "serviceType": "MATCHING",
+      "iconUri": "https://www.youtube.com/yts/img/yt_1200-vflhSIVnY.png",
+      "serviceName": "Youtube",
+      "price": 1080,
+      "cycle": 1,
+      "freeTrial": 1
+    },
+    {
+      "subscriptionId": "3",
+      "serviceType": "MATCHING",
+      "iconUri": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRuX7izxLGFnXQ7k79lGWEew3njHyI2NCmkq3-y_RN3An1lS7cj\u0026usqp=CAU",
+      "serviceName": "鬼滅の刃",
+      "price": 1080,
+      "cycle": 1,
+      "freeTrial": 1,
+      "isOriginal": true
+    }
+  ]
+}
