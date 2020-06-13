@@ -8,7 +8,19 @@ import (
 // ConvertGRPCUserSubscriptionResponse `*models.UserSubscription`を`*subscription.UserSubscription`に変換
 func ConvertGRPCUserSubscriptionResponse(s *models.UserSubscription) *subscription.UserSubscription {
 	subscriptionWithIcon := models.SubscriptionWithIcon{
-		Subscription: s.Subscription,
+		Subscription: models.Subscription{
+			SubscriptionID: s.Subscription.SubscriptionID,
+			Price: s.Price,
+			Cycle: s.Cycle,
+			CreatedAt: s.CreatedAt,
+			UpdatedAt: s.UpdatedAt,
+			ServiceName: s.Subscription.ServiceName,
+			ServiceType: s.Subscription.ServiceType,
+			IsOriginal: s.Subscription.IsOriginal,
+			FreeTrial: s.Subscription.FreeTrial,
+			IconID: s.Icon.IconID,
+		},
+		Icon: s.Icon,
 	}
 	return &subscription.UserSubscription{
 		UserSubscriptionId:s.UserSubscriptionID,
