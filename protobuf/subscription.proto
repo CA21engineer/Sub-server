@@ -39,10 +39,14 @@ message Subscription {
 message UserSubscription {
     string userSubscriptionId = 1;
     string subscriptionId = 2;
-    string userId = 3;
-    int32 cycle = 4;     // 単位は月
-    int32 price = 5;
-    google.protobuf.Timestamp startedAt = 6;
+    ServiceType serviceType = 3;
+    string iconUri = 4;
+    string serviceName = 5;
+    int32 price = 6;
+    int32 cycle = 7;     // 単位は月
+    int32 freeTrial = 8; // 単位は月
+    bool isOriginal = 9;
+    google.protobuf.Timestamp startedAt = 10;
 }
 
 message GetSubscriptionsResponse {

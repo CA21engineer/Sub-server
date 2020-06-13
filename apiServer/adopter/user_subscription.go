@@ -10,11 +10,15 @@ import (
 func ConvertGRPCUserSubscriptionResponse(s *models.UserSubscription) *subscription.UserSubscription {
 	startedAt, _ := ptypes.TimestampProto(s.StartedAt)
 	return &subscription.UserSubscription{
-		UserSubscriptionId: s.UserSubscriptionID,
-		SubscriptionId:    s.SubscriptionID,
-		UserId: s.UserID,
+		UserSubscriptionId:s.UserSubscriptionID,
+		SubscriptionId: s.Subscription.SubscriptionID,
+		ServiceType:    s.Subscription.ServiceType,
+		IconUri:        s.Icon.IconURI,
+		ServiceName:    s.Subscription.ServiceName,
 		Price:          s.Price,
 		Cycle:          s.Cycle,
+		FreeTrial:      s.Subscription.FreeTrial,
+		IsOriginal:     s.Subscription.IsOriginal,
 		StartedAt:      startedAt,
 	}
 }
