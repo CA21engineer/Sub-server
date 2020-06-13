@@ -116,7 +116,6 @@ func fetchCrawlerExecute(mode string, metrics metrics.Metrics) func(ctx context.
 
 	if mode == "PRO" {
 		return proCrawlerExecute
-	} else {
-		return devCrawlerExecute
 	}
+	return devCrawlerExecute
 }
