@@ -2,7 +2,6 @@ package models
 
 import (
 	"fmt"
-	"math/rand"
 	"time"
 
 	subscription "github.com/CA21engineer/Subs-server/apiServer/pb"
@@ -116,9 +115,6 @@ func (s *Subscription) RecommendSubscriptions(userID string) ([]*SubscriptionWit
 
 	var subscriptionsWithIcon []*SubscriptionWithIcon
 
-	// ここの値を変えたら出すものを変更させる
-	recommendType := rand.Intn(4) + 2
-
 	sql := fmt.Sprintf(`
 		select
 			subscriptions.*,
@@ -132,8 +128,6 @@ func (s *Subscription) RecommendSubscriptions(userID string) ([]*SubscriptionWit
 		where
 			subscriptions.is_original = true
 		and
-			subscriptions.service_type = '%d'
-		and
 			subscriptions.subscription_id not in (
 				select
 					subscription_id
@@ -141,8 +135,10 @@ func (s *Subscription) RecommendSubscriptions(userID string) ([]*SubscriptionWit
 					user_subscriptions
 				where
 					user_id = '%s'
-			);
-	`, recommendType, userID)
+			)
+		ORDER BY
+			RAND() LIMIT 10;
+	`, userID)
 	if err := DB.Raw(sql).Scan(&subscriptionsWithIcon).Error; err != nil {
 		return nil, err
 	}
