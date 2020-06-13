@@ -20,6 +20,7 @@ import (
 const namespace = "go_push_server"
 
 func main() {
+	mode := config.GetEnvString("MODE", "DEV")
 	ctx := context.Background()
 	m := metrics.CreateMetrics(namespace)
 	m.Counter("Server_Start_Total", map[string]string{}).Inc()
@@ -40,31 +41,11 @@ func main() {
 	cancellation := models.DefaultPushNotification("Cancellation", client, m)
 
 	// クローラー作成
-	lastTime := time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC)
-	type Record struct {
-		UserId             string
-		UserSubscriptionId string
-		StartedAt          time.Time
-		FreeTrial          int // 単位は月
-	}
+
 	cancellationCrawler := &models.NotificationCrawler{
 		PushNotification: cancellation,
 		Option:           models.DefaultNotificationCrawlerOpt(),
-		Execute: func(ctx context.Context, notification *models.PushNotification) {
-			// 完結型の場合はここでDBを読み込んで通知すべきユーザーをリストアップしてAddScheduleする
-			var records []*Record
-			sql := fmt.Sprintf("select user_subscriptions.user_id,user_subscriptions.user_subscription_id,user_subscriptions.started_at, subscriptions.free_trial from user_subscriptions join subscriptions on user_subscriptions.subscription_id = subscriptions.subscription_id where user_subscriptions.updated_at > '%v'", lastTime)
-			if err := models2.DB.Raw(sql).Scan(&records).Error; err != nil {
-				m.Counter("DB_Error_Total", map[string]string{"error_message": err.Error()}).Inc()
-				return
-			}
-
-			lastTime = time.Now()
-			for _, record := range records {
-				schedule := models.ApplyPlan(time.Now().Add(time.Second*10), record.UserId)
-				notification.AddSchedule(record.UserSubscriptionId, schedule)
-			}
-		},
+		Execute:          fetchCrawlerExecute(mode, m),
 	}
 
 	go func() {
@@ -96,4 +77,46 @@ func fcmClient(ctx context.Context, jsonFile string) (*messaging.Client, error) 
 		return nil, err
 	}
 	return app.Messaging(ctx)
+}
+
+func fetchCrawlerExecute(mode string, metrics metrics.Metrics) func(ctx context.Context, notification *models.PushNotification) {
+	// Record Record
+	type Record struct {
+		UserID             string
+		UserSubscriptionID string
+		StartedAt          time.Time
+		FreeTrial          int // 単位は月
+	}
+
+	lastTime := time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC)
+	proCrawlerExecute := func(ctx context.Context, notification *models.PushNotification) {
+		// 完結型の場合はここでDBを読み込んで通知すべきユーザーをリストアップしてAddScheduleする
+		var records []*Record
+		sql := fmt.Sprintf("select user_subscriptions.user_id,user_subscriptions.user_subscription_id,user_subscriptions.started_at, subscriptions.free_trial from user_subscriptions join subscriptions on user_subscriptions.subscription_id = subscriptions.subscription_id where user_subscriptions.updated_at > '%v'", lastTime)
+		if err := models2.DB.Raw(sql).Scan(&records).Error; err != nil {
+			metrics.Counter("DB_Error_Total", map[string]string{"error_message": err.Error()}).Inc()
+			return
+		}
+		lastTime = time.Now()
+		for _, record := range records {
+			timeToNotify := record.StartedAt.Add(time.Hour * 24 * time.Duration(record.FreeTrial))
+			schedule := models.ApplyPlan(timeToNotify, record.UserId)
+			notification.AddSchedule(record.UserSubscriptionId, schedule)
+		}
+	}
+
+	devCrawlerExecute := func(ctx context.Context, notification *models.PushNotification) {
+		// 完結型の場合はここでDBを読み込んで通知すべきユーザーをリストアップしてAddScheduleする
+		token := config.GetEnvString("PUSH_TOKEN", "token")
+		lastTime = time.Now()
+		timeToNotify := time.Now().Add(time.Second * 10)
+		schedule := models.ApplyPlan(timeToNotify, token)
+		notification.AddSchedule(token, schedule)
+	}
+
+	if mode == "PRO" {
+		return proCrawlerExecute
+	} else {
+		return devCrawlerExecute
+	}
 }

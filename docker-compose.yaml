@@ -28,6 +28,7 @@ services:
     restart: always
     build: ./pushServer
     environment:
+      - MODE=PRO
       - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
     depends_on:

@@ -26,10 +26,12 @@ services:
     restart: always
     build: ./pushServer
     environment:
+      - MODE=DEV
       - MYSQL_HOST=mysql
       - MYSQL_PORT=3306
       - MYSQL_USER=ca21engineer
       - MYSQL_PASS=pass
+      - PUSH_TOKEN=token
     depends_on:
       - mysql
 
