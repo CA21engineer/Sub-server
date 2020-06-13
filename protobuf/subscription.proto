@@ -36,6 +36,11 @@ message Subscription {
     google.protobuf.Timestamp startedAt = 9;
 }
 
+message UserSubscription {
+    string userSubscriptionId = 1;
+    Subscription subscription = 2;
+}
+
 message GetSubscriptionsResponse {
     repeated Subscription subscriptions = 1;
 }
@@ -55,7 +60,7 @@ message GetMySubscriptionRequest {
     string userId = 1;
 }
 message GetMySubscriptionResponse {
-    repeated Subscription subscriptions = 1;
+    repeated UserSubscription subscriptions = 1;
 }
 
 message CreateSubscriptionRequest {
