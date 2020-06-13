@@ -158,7 +158,7 @@ VALUES
   ('17', '17', 'Tinder', '4', 1700, 1, true, 1),
   ('18', '18', 'With', '4', 3400, 1, true, 1),
   ('19', '19', 'iCloud', '5', 400, 1, true, 1),
-  ('20', '20', 'googleCloud', '5', 250, 1, true, 1);
+  ('20', '20', 'googleドライブ', '5', 250, 1, true, 1);
 
 INSERT INTO
   `user_subscriptions`(
