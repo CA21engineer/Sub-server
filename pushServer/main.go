@@ -100,8 +100,8 @@ func fetchCrawlerExecute(mode string, metrics metrics.Metrics) func(ctx context.
 		lastTime = time.Now()
 		for _, record := range records {
 			timeToNotify := record.StartedAt.Add(time.Hour * 24 * time.Duration(record.FreeTrial))
-			schedule := models.ApplyPlan(timeToNotify, record.UserId)
-			notification.AddSchedule(record.UserSubscriptionId, schedule)
+			schedule := models.ApplyPlan(timeToNotify, record.UserID)
+			notification.AddSchedule(record.UserSubscriptionID, schedule)
 		}
 	}
 
