@@ -6,25 +6,22 @@ import (
 	"github.com/golang/protobuf/ptypes"
 )
 
-// ConvertGRPCUserSubscriptionResponse `*models.UserSubscription`を`*subscription.Subscription`に変換
-func ConvertGRPCUserSubscriptionResponse(s *models.UserSubscription) *subscription.Subscription {
+// ConvertGRPCUserSubscriptionResponse `*models.UserSubscription`を`*subscription.UserSubscription`に変換
+func ConvertGRPCUserSubscriptionResponse(s *models.UserSubscription) *subscription.UserSubscription {
 	startedAt, _ := ptypes.TimestampProto(s.StartedAt)
-	return &subscription.Subscription{
-		SubscriptionId: s.Subscription.SubscriptionID,
-		ServiceType:    s.Subscription.ServiceType,
-		IconUri:        s.Icon.IconURI,
-		ServiceName:    s.Subscription.ServiceName,
+	return &subscription.UserSubscription{
+		UserSubscriptionId: s.UserSubscriptionID,
+		SubscriptionId:    s.SubscriptionID,
+		UserId: s.UserID,
 		Price:          s.Price,
 		Cycle:          s.Cycle,
-		FreeTrial:      s.Subscription.FreeTrial,
-		IsOriginal:     s.Subscription.IsOriginal,
 		StartedAt:      startedAt,
 	}
 }
 
-// ConvertGRPCUserSubscriptionListResponse `[]*models.UserSubscription`を`[]*subscription.Subscription`に変換
-func ConvertGRPCUserSubscriptionListResponse(iconList []*models.UserSubscription) []*subscription.Subscription {
-	var userSubscriptions []*subscription.Subscription
+// ConvertGRPCUserSubscriptionListResponse `[]*models.UserSubscription`を`[]*subscription.UserSubscription`に変換
+func ConvertGRPCUserSubscriptionListResponse(iconList []*models.UserSubscription) []*subscription.UserSubscription {
+	var userSubscriptions []*subscription.UserSubscription
 	for _, v := range iconList {
 		userSubscriptions = append(userSubscriptions, ConvertGRPCUserSubscriptionResponse(v))
 	}

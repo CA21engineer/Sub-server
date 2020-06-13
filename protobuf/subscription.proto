@@ -36,6 +36,15 @@ message Subscription {
     google.protobuf.Timestamp startedAt = 9;
 }
 
+message UserSubscription {
+    string userSubscriptionId = 1;
+    string subscriptionId = 2;
+    string userId = 3;
+    int32 cycle = 4;     // 単位は月
+    int32 price = 5;
+    google.protobuf.Timestamp startedAt = 6;
+}
+
 message GetSubscriptionsResponse {
     repeated Subscription subscriptions = 1;
 }
@@ -55,7 +64,7 @@ message GetMySubscriptionRequest {
     string userId = 1;
 }
 message GetMySubscriptionResponse {
-    repeated Subscription subscriptions = 1;
+    repeated UserSubscription subscriptions = 1;
 }
 
 message CreateSubscriptionRequest {
