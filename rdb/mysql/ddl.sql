@@ -28,7 +28,7 @@ VALUES
   ),
   (
     '6',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcS22O52CYIRK2yUDJJxJZGojgrdNB_MtyDT89iNGCBo2KXZFYlJ&usqp=CAU',
+    'https://cdn.appllio.com/sites/default/files/amazon-music-000.png',
     true
   ),
   (
@@ -38,7 +38,7 @@ VALUES
   ),
   (
     '8',
-    'https://www.google.com/imgres?imgurl=https%3A%2F%2Fi.pinimg.com%2Foriginals%2F4c%2F75%2Fb6%2F4c75b6d6ac8f2889ca876f9f0c6f7431.png&imgrefurl=https%3A%2F%2Fwww.pinterest.jp%2Fpin%2F568086940488849817%2F&tbnid=JnkBp9V3xJU3PM&vet=10CAUQxiAoBWoXChMI8LOB5cb46QIVAAAAAB0AAAAAEAY..i&docid=h9edYFJSra3kSM&w=621&h=543&itg=1&q=ABEMA&ved=0CAUQxiAoBWoXChMI8LOB5cb46QIVAAAAAB0AAAAAEAY',
+    'https://lh3.googleusercontent.com/ZOrekp-ho-ecWG1TyvuOs0LoB5M4QYWCCLS5lFbAHhp_SklSd06544ENG3uC97zGWes=w170',
     true
   ),
   (
@@ -48,7 +48,7 @@ VALUES
   ),
   (
     '10',
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTeKSomfH4pPSrhZ9hGPkbifLosKXZkM6FII_Y1bkHJagUDKYHh&usqp=CAU',
+    'https://pbs.twimg.com/profile_images/1214825840732540928/1N-xZ_wd_400x400.jpg',
     true
   ),
   (
@@ -127,7 +127,7 @@ VALUES
     false
   );
 
-INSERT INTO 
+INSERT INTO
   `subscriptions`(
     `subscription_id`,
     `icon_id`,
@@ -139,26 +139,26 @@ INSERT INTO
     `free_trial`
   )
   VALUES
-    ('1', '1', 'AWA', '2', 1080, 1, true, 1),
-    ('2', '2', 'AppleMusic', '2', 1080, 1, true, 1),
-    ('3', '3', 'Spotify', '2', 1080, 1, true, 1),
-    ('4', '4', 'YouTubeMusic', '2', 1080, 1, true, 1),
-    ('5', '5', 'LINEMusic', '2', 1080, 1, true, 1),
-    ('6', '6', 'AmazonMusicUnlimited', '2', 1080, 1, true, 1),
-    ('7', '7', 'Youtube', '3', 1080, 1, true, 1),
-    ('8', '8', 'ABEMA', '3', 1080, 1, true, 1),
-    ('9', '9', 'Netflix', '3', 1080, 1, true, 1),
-    ('10', '10', 'AmazonPrimeVideo', '3', 1080, 1, true, 1),
-    ('11', '11', 'Hulu', '3', 1080, 1, true, 1),
-    ('12', '12', 'OPENREC', '3', 1080, 1, true, 1),
-    ('13', '13', 'dアニメストア', '3', 1080, 1, true, 1),
-    ('14', '14', 'FOD', '3', 1080, 1, true, 1),
-    ('15', '15', 'Tapple', '4', 1080, 1, true, 1),
-    ('16', '16', 'CrossMe', '4', 1080, 1, true, 1),
-    ('17', '17', 'Tinder', '4', 1080, 1, true, 1),
-    ('18', '18', 'With', '4', 1080, 1, true, 1),
-    ('19', '19', 'iCloud', '5', 1080, 1, true, 1),
-    ('20', '20', 'googleCloud', '5', 1080, 1, true, 1);
+    ('1', '1', 'AWA', '2', 980, 1, true, 1),
+    ('2', '2', 'AppleMusic', '2', 980, 1, true, 1),
+    ('3', '3', 'Spotify', '2', 980, 1, true, 3),
+    ('4', '4', 'YouTubeMusic', '2', 1180, 1, true, 1),
+    ('5', '5', 'LINEMusic', '2', 980, 1, true, 1),
+    ('6', '6', 'AmazonMusicUnlimited', '2', 780, 1, true, 3),
+    ('7', '7', 'Youtube', '3', 1180, 1, true, 1),
+    ('8', '8', 'ABEMA', '3', 960, 1, true, 1),
+    ('9', '9', 'Netflix', '3', 1200, 1, true, 1),
+    ('10', '10', 'AmazonPrimeVideo', '3', 500, 1, true, 1),
+    ('11', '11', 'Hulu', '3', 933, 1, true, 1),
+    ('12', '12', 'OPENREC', '3', 720, 1, true, 1),
+    ('13', '13', 'dアニメストア', '3', 400, 1, true, 1),
+    ('14', '14', 'FOD', '3', 888, 1, true, 1),
+    ('15', '15', 'Tapple', '4', 9800, 1, true, 1),
+    ('16', '16', 'CrossMe', '4', 3900, 1, true, 1),
+    ('17', '17', 'Tinder', '4', 1700, 1, true, 1),
+    ('18', '18', 'With', '4', 3400, 1, true, 1),
+    ('19', '19', 'iCloud', '5', 400, 1, true, 1),
+    ('20', '20', 'googleドライブ', '5', 250, 1, true, 1);
 
 INSERT INTO
   `user_subscriptions`(
