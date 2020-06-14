@@ -12,3 +12,7 @@ scrape_configs:
     static_configs:
       - targets:
         - 'api-server:2112'
+  - job_name: 'pushServer-metrics'
+    static_configs:
+      - targets:
+          - 'push-server:2112'
