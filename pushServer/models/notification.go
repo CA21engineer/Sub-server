@@ -56,6 +56,7 @@ func (p PushNotification) executeSchedule(ctx context.Context) {
 func (p PushNotification) sendMessage(userSubscriptionID string) func(context.Context, string) error {
 	return func(ctx context.Context, token string) error {
 		m := p.Option.MessageGen(userSubscriptionID)
+		p.Metrics.Counter(p.Namespace+"_Send_Message_Info", map[string]string{"UserSubscriptionID": userSubscriptionID, "Title": m.Title, "Body": m.Body}).Inc()
 		message := &messaging.Message{
 			APNS: &messaging.APNSConfig{
 				Headers: m.Headers,
