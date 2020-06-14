@@ -138,27 +138,27 @@ INSERT INTO
     `is_original`,
     `free_trial`
   )
-VALUES
-  ('1', '1', 'AWA', '2', 980, 1, true, 1),
-  ('2', '2', 'AppleMusic', '2', 980, 1, true, 1),
-  ('3', '3', 'Spotify', '2', 980, 1, true, 3),
-  ('4', '4', 'YouTubeMusic', '2', 1180, 1, true, 1),
-  ('5', '5', 'LINEMusic', '2', 980, 1, true, 1),
-  ('6', '6', 'AmazonMusicUnlimited', '2', 780, 1, true, 3),
-  ('7', '7', 'Youtube', '3', 1180, 1, true, 1),
-  ('8', '8', 'ABEMA', '3', 960, 1, true, 1),
-  ('9', '9', 'Netflix', '3', 1200, 1, true, 1),
-  ('10', '10', 'AmazonPrimeVideo', '3', 500, 1, true, 1),
-  ('11', '11', 'Hulu', '3', 933, 1, true, 1),
-  ('12', '12', 'OPENREC', '3', 720, 1, true, 1),
-  ('13', '13', 'dアニメストア', '3', 400, 1, true, 1),
-  ('14', '14', 'FOD', '3', 888, 1, true, 1),
-  ('15', '15', 'Tapple', '4', 9800, 1, true, 1),
-  ('16', '16', 'CrossMe', '4', 3900, 1, true, 1),
-  ('17', '17', 'Tinder', '4', 1700, 1, true, 1),
-  ('18', '18', 'With', '4', 3400, 1, true, 1),
-  ('19', '19', 'iCloud', '5', 400, 1, true, 1),
-  ('20', '20', 'googleドライブ', '5', 250, 1, true, 1);
+  VALUES
+    ('1', '1', 'AWA', '2', 980, 1, true, 1),
+    ('2', '2', 'AppleMusic', '2', 980, 1, true, 1),
+    ('3', '3', 'Spotify', '2', 980, 1, true, 3),
+    ('4', '4', 'YouTubeMusic', '2', 1180, 1, true, 1),
+    ('5', '5', 'LINEMusic', '2', 980, 1, true, 1),
+    ('6', '6', 'AmazonMusicUnlimited', '2', 780, 1, true, 3),
+    ('7', '7', 'Youtube', '3', 1180, 1, true, 1),
+    ('8', '8', 'ABEMA', '3', 960, 1, true, 1),
+    ('9', '9', 'Netflix', '3', 1200, 1, true, 1),
+    ('10', '10', 'AmazonPrimeVideo', '3', 500, 1, true, 1),
+    ('11', '11', 'Hulu', '3', 933, 1, true, 1),
+    ('12', '12', 'OPENREC', '3', 720, 1, true, 1),
+    ('13', '13', 'dアニメストア', '3', 400, 1, true, 1),
+    ('14', '14', 'FOD', '3', 888, 1, true, 1),
+    ('15', '15', 'Tapple', '4', 9800, 1, true, 1),
+    ('16', '16', 'CrossMe', '4', 3900, 1, true, 1),
+    ('17', '17', 'Tinder', '4', 1700, 1, true, 1),
+    ('18', '18', 'With', '4', 3400, 1, true, 1),
+    ('19', '19', 'iCloud', '5', 400, 1, true, 1),
+    ('20', '20', 'googleドライブ', '5', 250, 1, true, 1);
 
 INSERT INTO
   `user_subscriptions`(
