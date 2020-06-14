@@ -113,6 +113,8 @@ spec:
         - image: <% PUSH_SERVER_IMAGE_NAME %>
           name: push-server
           env:
+            - name: MODE
+              value: "PRO"
             - name: MYSQL_HOST
               value: <% MYSQL_NAMESPACE %>
             - name: MYSQL_PORT
