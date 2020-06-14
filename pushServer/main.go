@@ -38,7 +38,23 @@ func main() {
 	models2.ConnectDB()
 
 	// サブスク解約通知
-	cancellation := models.DefaultPushNotification("Cancellation", client, m)
+	cancellation := &models.PushNotification{
+		Namespace: "Cancellation",
+		Option: models.NotificationOpt{
+			MessageGen: func(s string) *models.Message {
+				return &models.Message{
+					Title:   "無料期間終了が近づいています！",
+					Body:    "間も無く無料期間が終了します、解約をお考えの方はお忘れのないようご注意ください！",
+					Badge:   0,
+					Headers: map[string]string{"apns-priority": "10"},
+				}
+			},
+			Duration: time.Second * 10,
+		},
+		Client:    client,
+		Schedules: map[string]*models.Schedule{},
+		Metrics:   m,
+	}
 
 	// クローラー作成
 
@@ -99,7 +115,8 @@ func fetchCrawlerExecute(mode string, metrics metrics.Metrics) func(ctx context.
 		}
 		lastTime = time.Now()
 		for _, record := range records {
-			timeToNotify := record.StartedAt.Add(time.Hour * 24 * time.Duration(record.FreeTrial))
+			// 1日前に通知
+			timeToNotify := record.StartedAt.Add(time.Hour * 24 * time.Duration(record.FreeTrial-1))
 			schedule := models.ApplyPlan(timeToNotify, record.UserID)
 			notification.AddSchedule(record.UserSubscriptionID, schedule)
 		}
