@@ -55,7 +55,7 @@ jobs:
           docker build . -t ${GCR_IMAGE_NAME}:${IMAGE_TAG}
           docker push ${GCR_IMAGE_NAME}
         env:
-          - FIREBASE_SERVICE_KEY: ${{ secrets.FIREBASE_SERVICE_KEY }}
+          FIREBASE_SERVICE_KEY: ${{ secrets.FIREBASE_SERVICE_KEY }}
 
       - name: Deploy
         working-directory: ./deploy/k8s
