@@ -58,7 +58,7 @@ func main() {
 		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
 	)
 	go func() {
-		subscriptionService := &service.SubscriptionServiceImpl{}
+		subscriptionService := &service.SubscriptionServiceImpl{Metrics: &m}
 		subscription.RegisterSubscriptionServiceServer(server, subscriptionService)
 		reflection.Register(server)
 		_ = server.Serve(lis)
