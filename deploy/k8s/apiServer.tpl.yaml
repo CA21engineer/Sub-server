@@ -89,6 +89,39 @@ spec:
             - name: MYSQL_PASS
               value: "root"
             - name: MYSQL_DATABASE
-              value: "first"
+              value: "subs"
           ports:
             - containerPort: 18080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: push-server
+  name: push-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: push-server
+  template:
+    metadata:
+      labels:
+        app: push-server
+    spec:
+      containers:
+        - image: <% PUSH_SERVER_IMAGE_NAME %>
+          name: push-server
+          env:
+            - name: MYSQL_HOST
+              value: <% MYSQL_NAMESPACE %>
+            - name: MYSQL_PORT
+              value: "3306"
+            - name: MYSQL_USER
+              value: "root"
+            - name: MYSQL_PASS
+              value: "root"
+            - name: MYSQL_DATABASE
+              value: "subs"
+          ports:
+            - containerPort: 2112

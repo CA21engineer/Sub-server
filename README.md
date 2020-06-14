@@ -64,6 +64,9 @@ $ sh ./grpc-code-gen/code-gen-go.sh ./protobuf ./apiServer/pb
 
   ssh 接続のポート
   空いていればなんでもよい。基本は 22 だがセキュリティー上変更した方がいい
+  
+- FIREBASE_SERVICE_KEY
+    `base64 -i firebase.json`
 
 ## er 図
 
