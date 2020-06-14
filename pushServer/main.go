@@ -38,7 +38,34 @@ func main() {
 	models2.ConnectDB()
 
 	// サブスク解約通知
-	cancellation := models.DefaultPushNotification("Cancellation", client, m)
+	cancellation := &models.PushNotification{
+		Namespace: "Cancellation",
+		Option: models.NotificationOpt{
+			MessageGen: func(userSubscriptionID string) *models.Message {
+				// Record Record
+				type Record struct {
+					ServiceName string
+					StartedAt   time.Time
+					FreeTrial   int
+				}
+				var record Record
+				sql := fmt.Sprintf("select subscriptions.service_name, user_subscriptions.started_at, subscriptions.free_trial from user_subscriptions left join subscriptions on user_subscriptions.subscription_id = subscriptions.subscription_id where user_subscriptions.user_subscription_id = '%s'", userSubscriptionID)
+				if err := models2.DB.Raw(sql).Scan(&record).Error; err != nil {
+					return nil
+				}
+				return &models.Message{
+					Title:   "無料期間終了が近づいています！",
+					Body:    fmt.Sprintf("間も無く[%s]の無料期間が終了します、解約をお考えの方はお忘れのないようご注意ください！\n開始日: %s \nトライアル期間: %d日\n", record.ServiceName, record.StartedAt.String(), record.FreeTrial),
+					Badge:   0,
+					Headers: map[string]string{"apns-priority": "10"},
+				}
+			},
+			Duration: time.Second * 10,
+		},
+		Client:    client,
+		Schedules: map[string]*models.Schedule{},
+		Metrics:   m,
+	}
 
 	// クローラー作成
 
@@ -99,7 +126,8 @@ func fetchCrawlerExecute(mode string, metrics metrics.Metrics) func(ctx context.
 		}
 		lastTime = time.Now()
 		for _, record := range records {
-			timeToNotify := record.StartedAt.Add(time.Hour * 24 * time.Duration(record.FreeTrial))
+			// 1日前に通知
+			timeToNotify := record.StartedAt.Add(time.Hour * 24 * time.Duration(record.FreeTrial-1))
 			schedule := models.ApplyPlan(timeToNotify, record.UserID)
 			notification.AddSchedule(record.UserSubscriptionID, schedule)
 		}

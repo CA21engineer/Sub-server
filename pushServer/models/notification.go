@@ -45,7 +45,7 @@ func (p PushNotification) executeSchedule(ctx context.Context) {
 	p.Metrics.Gauge(p.Namespace+"_Queue_Size", map[string]string{}).Set(float64(len(p.Schedules)))
 	for k, v := range p.Schedules {
 		if v.CanExecute() {
-			if err := v.Execute(ctx, p.sendMessage); err != nil {
+			if err := v.Execute(ctx, p.sendMessage(k)); err != nil {
 				p.Metrics.Counter(p.Namespace+"_Error_Total", map[string]string{"error_message": err.Error()}).Inc()
 			}
 			delete(p.Schedules, k)
@@ -53,25 +53,27 @@ func (p PushNotification) executeSchedule(ctx context.Context) {
 	}
 }
 
-func (p PushNotification) sendMessage(ctx context.Context, token string) error {
-	m := p.Option.MessageGen(token)
-	message := &messaging.Message{
-		APNS: &messaging.APNSConfig{
-			Headers: m.Headers,
-			Payload: &messaging.APNSPayload{
-				Aps: &messaging.Aps{
-					Alert: &messaging.ApsAlert{
-						Title: m.Title,
-						Body:  m.Body,
+func (p PushNotification) sendMessage(userSubscriptionID string) func(context.Context, string) error {
+	return func(ctx context.Context, token string) error {
+		m := p.Option.MessageGen(userSubscriptionID)
+		message := &messaging.Message{
+			APNS: &messaging.APNSConfig{
+				Headers: m.Headers,
+				Payload: &messaging.APNSPayload{
+					Aps: &messaging.Aps{
+						Alert: &messaging.ApsAlert{
+							Title: m.Title,
+							Body:  m.Body,
+						},
+						Badge: &m.Badge,
 					},
-					Badge: &m.Badge,
 				},
 			},
-		},
-		Token: token,
+			Token: token,
+		}
+		r, err := p.Client.SendAll(ctx, []*messaging.Message{message})
+		p.Metrics.Counter(p.Namespace+"_Result_Total", map[string]string{"type": "Success"}).Add(float64(r.SuccessCount))
+		p.Metrics.Counter(p.Namespace+"_Result_Total", map[string]string{"type": "Failure"}).Add(float64(r.FailureCount))
+		return err
 	}
-	r, err := p.Client.SendAll(ctx, []*messaging.Message{message})
-	p.Metrics.Counter(p.Namespace+"_Result_Total", map[string]string{"type": "Success"}).Add(float64(r.SuccessCount))
-	p.Metrics.Counter(p.Namespace+"_Result_Total", map[string]string{"type": "Failure"}).Add(float64(r.FailureCount))
-	return err
 }

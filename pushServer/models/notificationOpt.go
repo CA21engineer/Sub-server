@@ -4,7 +4,7 @@ import "time"
 
 // NotificationOpt NotificationOpt
 type NotificationOpt struct {
-	MessageGen func(string) *Message // token => models.Message
+	MessageGen func(string) *Message // userSubscriptionID => models.Message
 	Duration   time.Duration
 }
 
