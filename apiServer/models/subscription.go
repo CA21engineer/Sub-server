@@ -179,6 +179,19 @@ func (s *Subscription) Create(userID string, startedAt time.Time) error {
 
 // Update update original subscription
 func (s *Subscription) Update(usub *UserSubscription, userID, iconID, serviceName string, price, cycle, freeTrial int32, startedAt time.Time) error {
+	//=========デフォルトであるサブスクを変更する=================
+	if s.IsOriginal {
+		var uusubs UserSubscription
+		return DB.Model(&uusubs).Where("user_subscription_id = ?", usub.UserSubscriptionID).Updates(
+			UserSubscription{
+				Price:     price,
+				Cycle:     cycle,
+				StartedAt: startedAt,
+			},
+		).Error
+	}
+
+	//=========自作したサブスクを変更する=================
 	// トランザクション開始
 	tx := DB.Begin()
 

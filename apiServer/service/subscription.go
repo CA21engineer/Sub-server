@@ -90,9 +90,7 @@ func (SubscriptionServiceImpl) UpdateSubscription(ctx context.Context, req *subs
 	if err != nil {
 		return nil, responses.NotFoundError(err.Error())
 	}
-	if sub.IsOriginal == true {
-		return nil, responses.BadRequestError("オリジナルのサブスクリプションは変更できません")
-	}
+
 	startedAt, _ := ptypes.Timestamp(req.StartedAt)
 	err = sub.Update(usub, req.UserId, req.IconId, req.ServiceName, req.Price, req.Cycle, req.FreeTrial, startedAt)
 	if err != nil {
