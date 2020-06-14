@@ -1,12 +1,18 @@
 package main
 
 import (
+	"fmt"
+	"github.com/gin-gonic/gin"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
+	"strings"
+	"sync"
 	"time"
 
 	"github.com/CA21engineer/Subs-server/apiServer/models"
@@ -22,6 +28,9 @@ import (
 const namespace = "go_server"
 
 func main() {
+	wg := new(sync.WaitGroup)
+	wg.Add(4)
+
 	m := metrics.CreateMetrics(namespace)
 	go func() {
 		health := m.Gauge("health", map[string]string{})
@@ -48,9 +57,13 @@ func main() {
 		grpc.StreamInterceptor(grpc_prometheus.StreamServerInterceptor),
 		grpc.UnaryInterceptor(grpc_prometheus.UnaryServerInterceptor),
 	)
-	subscriptionService := &service.SubscriptionServiceImpl{}
-	subscription.RegisterSubscriptionServiceServer(server, subscriptionService)
-	reflection.Register(server)
+	go func() {
+		subscriptionService := &service.SubscriptionServiceImpl{Metrics: &m}
+		subscription.RegisterSubscriptionServiceServer(server, subscriptionService)
+		reflection.Register(server)
+		_ = server.Serve(lis)
+		wg.Done()
+	}()
 
 	// monitoring metrics, process and grpc
 	go func() {
@@ -59,10 +72,46 @@ func main() {
 		grpc_prometheus.Register(server)
 		http.Handle("/metrics", promhttp.Handler())
 		_ = http.ListenAndServe(":2112", nil)
+		wg.Done()
 	}()
 
-	if err := server.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
-	}
+	go func() {
+		serverPort := "9090"
+		r := gin.Default()
+		r.Use(
+			reverseProxy(
+				"/",
+				&url.URL{Scheme: "http", Host: config.GetEnvString("PROMETHEUS_NAMESPACE", "prometheus-service-server") + ":80"},
+			),
+		)
+		_ = r.Run(fmt.Sprintf(":%s", serverPort))
+		wg.Done()
+	}()
 
+	go func() {
+		serverPort := "3000"
+		r := gin.Default()
+		r.Use(
+			reverseProxy(
+				"/",
+				&url.URL{Scheme: "http", Host: config.GetEnvString("GRAFANA_NAMESPACE", "grafana-service") + ":80"},
+			),
+		)
+		_ = r.Run(fmt.Sprintf(":%s", serverPort))
+		wg.Done()
+	}()
+
+	wg.Wait()
+}
+
+func reverseProxy(urlPrefix string, target *url.URL) gin.HandlerFunc {
+	proxy := httputil.NewSingleHostReverseProxy(target)
+	proxy.FlushInterval = -1
+
+	return func(c *gin.Context) {
+		if strings.HasPrefix(c.Request.URL.Path, urlPrefix) {
+			c.Request.URL.Path = strings.Replace(c.Request.URL.Path, urlPrefix, "", 1)
+			proxy.ServeHTTP(c.Writer, c.Request)
+		}
+	}
 }

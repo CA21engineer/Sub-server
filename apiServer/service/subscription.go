@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/BambooTuna/go-server-lib/metrics"
 
 	"github.com/CA21engineer/Subs-server/apiServer/adopter"
 	"github.com/CA21engineer/Subs-server/apiServer/models"
@@ -11,7 +12,9 @@ import (
 )
 
 // SubscriptionServiceImpl SubscriptionServiceImpl struct
-type SubscriptionServiceImpl struct{}
+type SubscriptionServiceImpl struct {
+	Metrics *metrics.Metrics
+}
 
 // GetIconImageList サブスクを新規作成する際の追加可能アイコン一覧を取得する
 func (SubscriptionServiceImpl) GetIconImageList(ctx context.Context, req *subscription.Empty) (*subscription.GetIconImageResponse, error) {
@@ -41,7 +44,8 @@ func (SubscriptionServiceImpl) GetPopularSubscriptions(ctx context.Context, req 
 }
 
 // GetRecommendSubscriptions サーバーに登録済みのサブスク一覧をパラメータによって出し分け
-func (SubscriptionServiceImpl) GetRecommendSubscriptions(ctx context.Context, req *subscription.GetRecommendSubscriptionsRequest) (*subscription.GetRecommendSubscriptionsResponse, error) {
+func (s SubscriptionServiceImpl) GetRecommendSubscriptions(ctx context.Context, req *subscription.GetRecommendSubscriptionsRequest) (*subscription.GetRecommendSubscriptionsResponse, error) {
+	s.Metrics.Counter("RequestInfo", map[string]string{"name": "GetRecommendSubscriptions", "Request": req.String()})
 	subscriptions, err := new(models.Subscription).RecommendSubscriptions(req.UserId)
 	if err != nil {
 		return nil, err
@@ -50,7 +54,8 @@ func (SubscriptionServiceImpl) GetRecommendSubscriptions(ctx context.Context, re
 }
 
 // GetMySubscription 自分のリストに追加されているサブスク一覧
-func (SubscriptionServiceImpl) GetMySubscription(ctx context.Context, req *subscription.GetMySubscriptionRequest) (*subscription.GetMySubscriptionResponse, error) {
+func (s SubscriptionServiceImpl) GetMySubscription(ctx context.Context, req *subscription.GetMySubscriptionRequest) (*subscription.GetMySubscriptionResponse, error) {
+	s.Metrics.Counter("RequestInfo", map[string]string{"name": "GetMySubscription", "Request": req.String()})
 	userSubscriptions, err := new(models.UserSubscription).GetUserSubscriptions(req.UserId)
 	if err != nil {
 		return nil, err
@@ -59,7 +64,8 @@ func (SubscriptionServiceImpl) GetMySubscription(ctx context.Context, req *subsc
 }
 
 // CreateSubscription 未登録のサブスクを新規作成する
-func (SubscriptionServiceImpl) CreateSubscription(ctx context.Context, req *subscription.CreateSubscriptionRequest) (*subscription.CreateSubscriptionResponse, error) {
+func (s SubscriptionServiceImpl) CreateSubscription(ctx context.Context, req *subscription.CreateSubscriptionRequest) (*subscription.CreateSubscriptionResponse, error) {
+	s.Metrics.Counter("RequestInfo", map[string]string{"name": "CreateSubscription", "Request": req.String()})
 	sub := models.NewSubscription(req.IconId, req.ServiceName, req.Price, req.Cycle, req.FreeTrial)
 	startedAt, _ := ptypes.Timestamp(req.StartedAt)
 	err := sub.Create(req.UserId, startedAt)
@@ -70,7 +76,8 @@ func (SubscriptionServiceImpl) CreateSubscription(ctx context.Context, req *subs
 }
 
 // RegisterSubscription 登録済みのサブスクを自分のリストに追加する
-func (SubscriptionServiceImpl) RegisterSubscription(ctx context.Context, req *subscription.RegisterSubscriptionRequest) (*subscription.RegisterSubscriptionResponse, error) {
+func (s SubscriptionServiceImpl) RegisterSubscription(ctx context.Context, req *subscription.RegisterSubscriptionRequest) (*subscription.RegisterSubscriptionResponse, error) {
+	s.Metrics.Counter("RequestInfo", map[string]string{"name": "RegisterSubscription", "Request": req.String()})
 	startedAt, _ := ptypes.Timestamp(req.StartedAt)
 	usub := models.NewUserSubscription(req.UserId, req.SubscriptionId, req.Price, req.Cycle, startedAt)
 	err := usub.Register()
@@ -81,7 +88,8 @@ func (SubscriptionServiceImpl) RegisterSubscription(ctx context.Context, req *su
 }
 
 // UpdateSubscription 既存サブスクを更新する
-func (SubscriptionServiceImpl) UpdateSubscription(ctx context.Context, req *subscription.UpdateSubscriptionRequest) (*subscription.UpdateSubscriptionResponse, error) {
+func (s SubscriptionServiceImpl) UpdateSubscription(ctx context.Context, req *subscription.UpdateSubscriptionRequest) (*subscription.UpdateSubscriptionResponse, error) {
+	s.Metrics.Counter("RequestInfo", map[string]string{"name": "UpdateSubscription", "Request": req.String()})
 	usub, err := new(models.UserSubscription).Find(req.UserSubscriptionId)
 	if err != nil {
 		return nil, responses.NotFoundError(err.Error())
@@ -100,7 +108,8 @@ func (SubscriptionServiceImpl) UpdateSubscription(ctx context.Context, req *subs
 }
 
 // UnregisterSubscription 登録済みのサブスクをリストから削除する
-func (SubscriptionServiceImpl) UnregisterSubscription(ctx context.Context, req *subscription.UnregisterSubscriptionRequest) (*subscription.UnregisterSubscriptionResponse, error) {
+func (s SubscriptionServiceImpl) UnregisterSubscription(ctx context.Context, req *subscription.UnregisterSubscriptionRequest) (*subscription.UnregisterSubscriptionResponse, error) {
+	s.Metrics.Counter("RequestInfo", map[string]string{"name": "UnregisterSubscription", "Request": req.String()})
 	usub, err := new(models.UserSubscription).Unregister(req.UserId, req.UserSubscriptionId)
 	if err != nil {
 		return nil, responses.NotFoundError(err.Error())
